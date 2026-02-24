@@ -25,3 +25,4 @@ Thumbs.db
 # IDE
 .idea/
 .vscode/
+dashboard/src/data.js
