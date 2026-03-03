@@ -208,8 +208,13 @@ def write_to_dynamodb(table_name, resources):
                 "scan_ts":       res.get("scan_ts", now.isoformat()),
                 "resource_name": resource_name,
                 "service":       res["Service"],
-                "status":        "Idle",
+                "status":        res.get("status", "Idle"),
                 "resource_id":   res["ResourceId"],
+                # Analytics Feature: AMI Tracking
+                "ami_id":        res.get("ami_id", ""),
+                "ami_name":      res.get("ami_name", ""),
+                "ami_age_days":  Decimal(f"{float(res.get('ami_age_days', 0.0)):.2f}"),
+                "instance_state": res.get("instance_state", "Unknown"),
                 # Fix #6 — use f-string formatting to avoid float precision loss
                 "idle_hours":    Decimal(f"{idle_hrs:.2f}"),
                 "idle_days":     Decimal(f"{idle_days:.2f}"),
@@ -248,6 +253,20 @@ def scan_ec2(aws_client, region, scan_ts):
             for r in page["Reservations"]:
                 instances.extend(r["Instances"])
 
+        # FETCH AMI DETAILS FOR ALL INSTANCES (RUNNING & STOPPED)
+        image_ids = list({inst["ImageId"] for inst in instances if "ImageId" in inst})
+        image_details = {}
+        if image_ids:
+            try:
+                # describe_images can take up to 1000 per request, using 200 chunk logic for safety
+                for i in range(0, len(image_ids), 200):
+                    chunk = image_ids[i:i+200]
+                    resp = ec2.describe_images(ImageIds=chunk)
+                    for img in resp.get("Images", []):
+                        image_details[img["ImageId"]] = img
+            except Exception as e:
+                logger.warning(f"Error describing images: {e}")
+
         end_time   = datetime.utcnow()
         start_time = end_time - timedelta(days=30)
 
@@ -257,6 +276,29 @@ def scan_ec2(aws_client, region, scan_ts):
             tags        = {t["Key"]: t["Value"] for t in inst.get("Tags", [])}
             if is_ignored(tags):
                 continue
+
+            ami_id = inst.get("ImageId", "Unknown")
+            ami_name = "Unknown"
+            ami_age_days = 0.0
+
+            if ami_id in image_details:
+                ami_dict = image_details[ami_id]
+                ami_name = ami_dict.get("Name", "Unknown")
+                creation_date_str = ami_dict.get("CreationDate")
+                if creation_date_str:
+                    try:
+                        # e.g., '2023-01-01T10:00:00.000Z'
+                        cdt = datetime.strptime(creation_date_str, "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=None)
+                        now_dt = datetime.utcnow()
+                        ami_age_days = max(0.0, (now_dt - cdt).total_seconds() / 86400.0)
+                    except Exception:
+                        try:
+                            # fallback standard iso
+                            cdt = datetime.fromisoformat(creation_date_str.replace("Z", "+00:00")).replace(tzinfo=None)
+                            now_dt = datetime.utcnow()
+                            ami_age_days = max(0.0, (now_dt - cdt).total_seconds() / 86400.0)
+                        except Exception:
+                            pass
 
             if state == "stopped":
                 now    = datetime.utcnow()
@@ -271,7 +313,9 @@ def scan_ec2(aws_client, region, scan_ts):
                         pass
                 idle.append({
                     "ResourceId": instance_id, "Service": "EC2", "Region": region,
-                    "IdleReason": "Instance is Stopped",
+                    "status": "Idle", "IdleReason": "Instance is Stopped",
+                    "instance_state": state,
+                    "ami_id": ami_id, "ami_name": ami_name, "ami_age_days": ami_age_days,
                     "IdleStats": {
                         "last_active": None, "idle_until": now.isoformat(),
                         "idle_hours": float(f"{idle_h:.2f}"),
@@ -314,19 +358,22 @@ def scan_ec2(aws_client, region, scan_ts):
                 idle_hours = max(0, (now - final_la).total_seconds()) / 3600.0
                 idle_days  = idle_hours / 24.0
 
-            if idle_hours >= 24.0:
-                idle.append({
-                    "ResourceId": instance_id, "Service": "EC2", "Region": region,
-                    "IdleReason": "Low CPU (< 10%) AND NetworkOut (< 5MB)",
-                    "IdleStats": {
-                        "last_active": final_la.isoformat() if final_la else None,
-                        "idle_until":  now.isoformat(),
-                        "idle_hours":  float(f"{idle_hours:.2f}"),
-                        "idle_days":   float(f"{idle_days:.2f}"),
-                        "DataStatus":  "OK"
-                    },
-                    "Tags": tags, "scan_ts": scan_ts
-                })
+            is_idle = idle_hours >= 24.0
+            idle.append({
+                "ResourceId": instance_id, "Service": "EC2", "Region": region,
+                "status": "Idle" if is_idle else "Active",
+                "instance_state": state,
+                "ami_id": ami_id, "ami_name": ami_name, "ami_age_days": ami_age_days,
+                "IdleReason": "Low CPU (< 10%) AND NetworkOut (< 5MB)" if is_idle else "Actively Running",
+                "IdleStats": {
+                    "last_active": final_la.isoformat() if final_la else None,
+                    "idle_until":  now.isoformat(),
+                    "idle_hours":  float(f"{idle_hours:.2f}"),
+                    "idle_days":   float(f"{idle_days:.2f}"),
+                    "DataStatus":  "OK"
+                },
+                "Tags": tags, "scan_ts": scan_ts
+            })
         return idle
     except Exception as e:
         logger.error(f"scan_ec2 failed in {region}: {e}")

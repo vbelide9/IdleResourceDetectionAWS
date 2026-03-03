@@ -18,11 +18,10 @@ An automated AWS infrastructure scanner that detects idle resources, calculates 
 │  │  (main.py)        │      │  IdleResourcesTable│                  │
 │  └──────────┬────────┘      └──────────┬─────────┘                  │
 │             │                          │                            │
-│             │ (cost logic)             ▼                            │
-│             │              ┌───────────────────────┐               │
-│  ┌──────────▼────────┐     │  Reader Lambda         │               │
-│  │ AWS Pricing API    │     │  (reader.py)          │               │
-│  └───────────────────┘     └───────────┬───────────┘               │
+│                            ┌───────────▼───────────┐               │
+│                            │   API Gateway          │               │
+│                            │   GET /resources       │               │
+│                            └───────────────────────┘               │
 │                                        │                            │
 │                            ┌───────────▼───────────┐               │
 │                            │   API Gateway          │               │
@@ -57,24 +56,11 @@ An automated AWS infrastructure scanner that detects idle resources, calculates 
 
 > * **S3 Exclusions:** The scanner automatically ignores log destination buckets (e.g. buckets containing `-logs`, `-access-log`, `-audit-replicated` in the name) without touching resource tags. You can override the matching patterns using the `S3_IGNORE_PATTERNS` environment variable.
 
----
 
-## Cost Calculation Formulas
 
-All cost values are computed **at scan time** and stored directly in DynamoDB. The dashboard reads pre-computed values — no inference is performed on the frontend.
+## Centralised Angular Dashboard
 
-1. **Monthly Rate:** AWS Pricing API (`pricing:GetProducts`) returns the on-demand hourly rate. `monthly_rate = hourly_rate × 730.5`
-2. **Idle Hours:** CloudWatch metrics give the last active timestamp. If missing, the scanner pulls the `last_active` state from the previous day's DynamoDB run. `idle_hours = now - last_active`
-3. **Waste Output:** 
-   - `idle_cost`: Total accumulated waste since the resource went idle.
-   - `waste_this_month`: Pro-rated waste for the last 30 days.
-   - `waste_today`: Pro-rated waste for the last 24 hours.
-
----
-
-## Centralised React Dashboard
-
-The dashboard supports monitoring multiple AWS accounts from a single pane of glass.
+The dashboard supports monitoring multiple AWS accounts from a single pane of glass and was recently rewritten from React to Angular utilizing a premium Shadcn-inspired interaction design language.
 
 1. Deploy the API Gateway reader to each AWS account (see deployment steps).
 2. Create `dashboard/.env` with your API Gateway URLs separated by commas:
@@ -85,15 +71,20 @@ The dashboard supports monitoring multiple AWS accounts from a single pane of gl
    ```bash
    cd dashboard
    npm install
-   npm run dev
+   npm run start
    ```
 
 ### Dashboard Features
-* **Global Date Picker:** Traverse scanner history (metrics are tracked daily via sort keys `YYYYMMDD`).
-* **Environment Filters:** Auto-filters based on standard SDLC tags (`dev`, `prod`, `qa`) found in your AWS resource tags.
-* **Project Filters:** Auto-filters based on project/application tags.
-* **Service/Resource Charts:** Visualises idle times across the entire fleet.
-* **Exclusion Tagging:** AWS resources tagged with `IdleScanIgnore=True` will not appear in the dashboard.
+*   **Modern Angular Architecture:** Fully responsive, zero-build-time CSS using Tailwind, and component-scoped RxJS data handling.
+*   **AMI Age Tracking:** Extracts `ImageId` and calculates the days since creation for all Running and Stopped EC2 instances, visible in a dedicated AMI analytics tab.
+*   **High-Density Visualization:** 15-row data tables without text truncation, complete with multi-field sortable headers and transition hover animations on all KPI widgets.
+*   **Security & Architecture Modules:** Out-of-the-box UI navigation links ready for backend integration with CAST Scan Status, Archer Risk Exceptions, TLS Certificate Expiration tracking, and CVE data feeds.
+*   **Global Date Picker:** Traverse scanner history (metrics are tracked daily via sort keys `YYYYMMDD`).
+*   **Environment Filters:** Auto-filters based on standard SDLC tags (`dev`, `prod`, `qa`) found in your AWS resource tags.
+*   **Service/Resource Charts:** Visualises idle times across the entire fleet.
+*   **Exclusion Tagging:** AWS resources tagged with `IdleScanIgnore=True` will not appear in the dashboard.
+
+
 
 ---
 
@@ -104,7 +95,7 @@ This bot is deliberately designed without a heavy IaC framework (like CDK or Ter
 For manual deployment into a single account:
 
 1. **DynamoDB:** Create `IdleResourcesTable` (Partition key: `pk`, Sort key: `sk`, On-demand capacity).
-2. **IAM Role:** Create a Lambda role with permissions for all `Describe*`/`List*` calls for the supported services, plus DynamoDB read/write and `pricing:GetProducts`.
+2. **IAM Role:** Create a Lambda role with permissions for all `Describe*`/`List*` calls for the supported services, plus DynamoDB read/write.
 3. **Lambda Scanner:**
    - Package `src/scanner/main.py`.
    - Set env vars: `TABLE_NAME=IdleResourcesTable`.

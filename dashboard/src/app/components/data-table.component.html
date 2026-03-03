@@ -1,0 +1,215 @@
+<div class="flex flex-col h-full w-full">
+    <!-- Search and Controls Header -->
+    <div
+        class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-4 border-b border-border bg-card shrink-0">
+        <!-- Search input -->
+        <div class="relative w-full sm:w-80 group">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-4 w-4 text-muted-foreground transition-colors group-focus-within:text-primary" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+            <input type="text"
+                class="block w-full pl-9 pr-3 py-2 border border-border rounded-md leading-5 bg-background text-foreground text-sm placeholder-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring transition-colors shadow-sm"
+                placeholder="Search by ID, Type, Reason..." [value]="searchTerm" (keyup)="onSearchChange($event)">
+        </div>
+    </div>
+
+    <div class="w-full flex-1 overflow-auto bg-card relative min-h-[300px]">
+        <table class="w-full caption-bottom text-sm relative table-fixed">
+            <thead class="bg-muted/95 backdrop-blur border-b border-border w-full sticky top-0 z-20 shadow-sm">
+                <tr class="transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                    <th class="h-8 px-4 py-2 text-left align-middle font-medium text-muted-foreground w-1/4 cursor-pointer hover:text-foreground transition-colors group"
+                        (click)="sortData('resource_name')">
+                        <div class="flex items-center space-x-1">
+                            <span>Resource Name</span>
+                            <ng-container *ngIf="sortColumn === 'resource_name'">
+                                <svg *ngIf="sortDirection === 'asc'" class="w-3.5 h-3.5" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 15l7-7 7 7"></path>
+                                </svg>
+                                <svg *ngIf="sortDirection === 'desc'" class="w-3.5 h-3.5" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </ng-container>
+                            <svg *ngIf="sortColumn !== 'resource_name'"
+                                class="w-3.5 h-3.5 opacity-0 group-hover:opacity-50 transition-opacity" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                            </svg>
+                        </div>
+                    </th>
+                    <th class="h-8 px-4 py-2 text-left align-middle font-medium text-muted-foreground w-1/6 cursor-pointer hover:text-foreground transition-colors group"
+                        (click)="sortData('type')">
+                        <div class="flex items-center space-x-1">
+                            <span>Type</span>
+                            <ng-container *ngIf="sortColumn === 'type'">
+                                <svg *ngIf="sortDirection === 'asc'" class="w-3.5 h-3.5" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 15l7-7 7 7"></path>
+                                </svg>
+                                <svg *ngIf="sortDirection === 'desc'" class="w-3.5 h-3.5" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </ng-container>
+                            <svg *ngIf="sortColumn !== 'type'"
+                                class="w-3.5 h-3.5 opacity-0 group-hover:opacity-50 transition-opacity" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                            </svg>
+                        </div>
+                    </th>
+                    <th class="h-8 px-4 py-2 text-left align-middle font-medium text-muted-foreground w-1/6 cursor-pointer hover:text-foreground transition-colors group"
+                        (click)="sortData('region')">
+                        <div class="flex items-center space-x-1">
+                            <span>Environment</span>
+                            <ng-container *ngIf="sortColumn === 'region'">
+                                <svg *ngIf="sortDirection === 'asc'" class="w-3.5 h-3.5" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 15l7-7 7 7"></path>
+                                </svg>
+                                <svg *ngIf="sortDirection === 'desc'" class="w-3.5 h-3.5" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </ng-container>
+                            <svg *ngIf="sortColumn !== 'region'"
+                                class="w-3.5 h-3.5 opacity-0 group-hover:opacity-50 transition-opacity" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                            </svg>
+                        </div>
+                    </th>
+                    <th class="h-8 px-4 py-2 text-left align-middle font-medium text-muted-foreground w-1/6 cursor-pointer hover:text-foreground transition-colors group"
+                        (click)="sortData('days_idle')">
+                        <div class="flex items-center space-x-1">
+                            <span>Idle Since</span>
+                            <ng-container *ngIf="sortColumn === 'days_idle'">
+                                <svg *ngIf="sortDirection === 'asc'" class="w-3.5 h-3.5" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 15l7-7 7 7"></path>
+                                </svg>
+                                <svg *ngIf="sortDirection === 'desc'" class="w-3.5 h-3.5" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </ng-container>
+                            <svg *ngIf="sortColumn !== 'days_idle'"
+                                class="w-3.5 h-3.5 opacity-0 group-hover:opacity-50 transition-opacity" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                            </svg>
+                        </div>
+                    </th>
+                    <th class="h-8 px-4 py-2 text-left align-middle font-medium text-muted-foreground w-1/4 cursor-pointer hover:text-foreground transition-colors group"
+                        (click)="sortData('reason')">
+                        <div class="flex items-center space-x-1">
+                            <span>Reason</span>
+                            <ng-container *ngIf="sortColumn === 'reason'">
+                                <svg *ngIf="sortDirection === 'asc'" class="w-3.5 h-3.5" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 15l7-7 7 7"></path>
+                                </svg>
+                                <svg *ngIf="sortDirection === 'desc'" class="w-3.5 h-3.5" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </ng-container>
+                            <svg *ngIf="sortColumn !== 'reason'"
+                                class="w-3.5 h-3.5 opacity-0 group-hover:opacity-50 transition-opacity" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                            </svg>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-border [&_tr:last-child]:border-0 bg-card">
+                <tr *ngFor="let item of displayedRows"
+                    class="border-b border-border transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                    <td class="px-4 py-1.5 align-middle whitespace-nowrap">
+                        <div class="font-medium text-foreground" [title]="item.resource_name || ''">
+                            {{item.resource_name || ''}}
+                        </div>
+                    </td>
+                    <td class="px-4 py-1.5 align-middle whitespace-nowrap">
+                        <div
+                            class="inline-flex items-center rounded-md border border-border px-2.5 py-0.5 text-[11px] font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-secondary text-secondary-foreground hover:bg-secondary/80">
+                            {{item.type}}
+                        </div>
+                        <span *ngIf="item.size_gb" class="text-xs text-muted-foreground ml-2">{{item.size_gb}} GB</span>
+                    </td>
+                    <td class="px-4 py-1.5 align-middle whitespace-nowrap text-muted-foreground text-xs">
+                        {{item.region || 'N/A'}}
+                    </td>
+                    <td class="px-4 py-1.5 align-middle whitespace-nowrap">
+                        <div class="flex items-center">
+                            <span class="font-medium text-sm"
+                                [ngClass]="item.days_idle > 30 ? 'text-destructive' : 'text-foreground'">
+                                {{item.days_idle}} days
+                            </span>
+                        </div>
+                    </td>
+                    <td class="px-4 py-1.5 align-middle text-muted-foreground text-xs max-w-md">
+                        {{item.reason}}
+                    </td>
+                </tr>
+
+                <tr *ngIf="displayedRows.length === 0"
+                    class="border-b border-border transition-colors hover:bg-muted/50">
+                    <td colspan="5" class="p-4 align-middle text-center text-muted-foreground text-sm h-24">
+                        No idle resources found matching the criteria.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex items-center justify-between px-6 py-4 border-t border-border bg-card shrink-0">
+        <div class="flex-1 text-sm text-muted-foreground">
+            Showing <span class="font-medium text-foreground">{{ (currentPage - 1) * itemsPerPage + 1 }}</span> to
+            <span class="font-medium text-foreground">{{ currentPage * itemsPerPage > filteredData.length ?
+                filteredData.length : currentPage * itemsPerPage }}</span> of
+            <span class="font-medium text-foreground">{{ filteredData.length }}</span> results.
+        </div>
+        <div class="flex items-center space-x-2">
+            <button (click)="prevPage()" [disabled]="currentPage === 1"
+                class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 w-9">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                <span class="sr-only">Previous page</span>
+            </button>
+            <div class="text-sm font-medium text-foreground px-2">
+                Page {{ currentPage }} of {{ totalPages }}
+            </div>
+            <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+                class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 w-9">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+                <span class="sr-only">Next page</span>
+            </button>
+        </div>
+    </div>
+</div>
