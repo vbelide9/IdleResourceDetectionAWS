@@ -16,23 +16,19 @@ An automated AWS infrastructure scanner that detects idle resources, calculates 
 │  ┌───────────────────┐      ┌──────────────────┐                   │
 │  │  Scanner Lambda   │─────▶│    DynamoDB       │                   │
 │  │  (main.py)        │      │  IdleResourcesTable│                  │
-│  └──────────┬────────┘      └──────────┬─────────┘                  │
-│             │                          │                            │
-│                            ┌───────────▼───────────┐               │
-│                            │   API Gateway          │               │
-│                            │   GET /resources       │               │
-│                            └───────────────────────┘               │
+│  └───────────────────┘      └──────────┬─────────┘                  │
 │                                        │                            │
 │                            ┌───────────▼───────────┐               │
 │                            │   API Gateway          │               │
 │                            │   GET /resources       │               │
-│                            └───────────────────────┘               │
+│                            └───────────┬───────────┘               │
+│                                        │                            │
 └────────────────────────────────────────┼────────────────────────────┘
                                          │ HTTPS (Multi-Account Support)
                                          ▼
                               ┌──────────────────────┐
-                              │  React Dashboard      │
-                              │  (VITE_ACCOUNTS=...)  │
+                              │  Angular Dashboard    │
+                              │  (CloudOps Console)   │
                               └──────────────────────┘
 ```
 
@@ -56,35 +52,60 @@ An automated AWS infrastructure scanner that detects idle resources, calculates 
 
 > * **S3 Exclusions:** The scanner automatically ignores log destination buckets (e.g. buckets containing `-logs`, `-access-log`, `-audit-replicated` in the name) without touching resource tags. You can override the matching patterns using the `S3_IGNORE_PATTERNS` environment variable.
 
-
+---
 
 ## Centralised Angular Dashboard
 
-The dashboard supports monitoring multiple AWS accounts from a single pane of glass and was recently rewritten from React to Angular utilizing a premium Shadcn-inspired interaction design language.
+The dashboard supports monitoring multiple AWS accounts from a single pane of glass. It is built with Angular and uses a premium Shadcn-inspired interaction design language with Tailwind CSS.
+
+### Supported Projects
+
+The dashboard is configured for the following projects:
+
+| Project ID | Description |
+|---|---|
+| `ICS-AEM` | ICS AEM |
+| `ICS-EM` | ICS EM |
+| `ICS-SDUI` | ICS SDUI |
+| `ICS-ES` | ICS ES |
+
+### Setup
 
 1. Deploy the API Gateway reader to each AWS account (see deployment steps).
-2. Create `dashboard/.env` with your API Gateway URLs separated by commas:
-   ```env
-   VITE_ACCOUNTS=https://api-123.execute-api.us-east-1.amazonaws.com/prod/resources,https://api-456.execute-api.eu-west-1.amazonaws.com/prod/resources
+2. Configure your API Gateway URLs in `dashboard/src/environments/environment.ts`:
+   ```typescript
+   export const environment = {
+       production: false,
+       accounts: {
+           "ICS-AEM-dev": "https://your-api-id.execute-api.us-east-1.amazonaws.com/prod/resources",
+           "ICS-AEM-tst": "https://your-api-id.execute-api.us-east-1.amazonaws.com/prod/resources",
+           "ICS-EM-dev": "https://your-api-id.execute-api.us-east-1.amazonaws.com/prod/resources",
+           "ICS-SDUI-pro": "https://your-api-id.execute-api.us-east-1.amazonaws.com/prod/resources"
+       }
+   };
    ```
 3. Run locally:
    ```bash
    cd dashboard
    npm install
-   npm run start
+   ng serve
    ```
 
 ### Dashboard Features
-*   **Modern Angular Architecture:** Fully responsive, zero-build-time CSS using Tailwind, and component-scoped RxJS data handling.
+
+*   **Modern Angular Architecture:** Fully responsive design using Tailwind CSS and component-scoped RxJS data handling.
+*   **Sidebar Navigation:** Clean sidebar with Title Case labels for all modules — Idle Resources Dashboard, AMI Details, Optimization, and more.
 *   **AMI Age Tracking:** Extracts `ImageId` and calculates the days since creation for all Running and Stopped EC2 instances, visible in a dedicated AMI analytics tab.
 *   **High-Density Visualization:** 15-row data tables without text truncation, complete with multi-field sortable headers and transition hover animations on all KPI widgets.
-*   **Security & Architecture Modules:** Out-of-the-box UI navigation links ready for backend integration with CAST Scan Status, Archer Risk Exceptions, TLS Certificate Expiration tracking, and CVE data feeds.
+*   **Certificate Expirations:** Tracks ACM certificate expirations with filterable views for ACM-only and External-only certificates with dynamic table headers.
+*   **Certificate Management:** A dedicated admin form under **Settings → Certificate Management** to manually register and track external (non-ACM) certificates. Collects domain name, vendor, expiration date, renewal date, project, and environment. Filter dropdowns are hidden on this tab since it is a write operation.
+*   **AWS Cost Anomalies:** Displays unexpected spending spikes with expandable detail rows showing root cause, impact amount, and linked AWS services.
+*   **Security & Architecture Modules:** Navigation links for CAST Scan Status, Archer Risk Exceptions, and CVE data feeds.
 *   **Global Date Picker:** Traverse scanner history (metrics are tracked daily via sort keys `YYYYMMDD`).
-*   **Environment Filters:** Auto-filters based on standard SDLC tags (`dev`, `prod`, `qa`) found in your AWS resource tags.
+*   **Environment Filters:** Auto-filters based on standard SDLC tags (`dev`, `tst`, `prd`) found in your AWS resource tags.
+*   **Project Filters:** Filter data by project (ICS-AEM, ICS-EM, ICS-SDUI, ICS-ES).
 *   **Service/Resource Charts:** Visualises idle times across the entire fleet.
 *   **Exclusion Tagging:** AWS resources tagged with `IdleScanIgnore=True` will not appear in the dashboard.
-
-
 
 ---
 
