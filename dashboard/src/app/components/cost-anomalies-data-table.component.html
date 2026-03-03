@@ -1,0 +1,186 @@
+<div class="overflow-x-auto rounded-b-xl max-h-[100%] absolute inset-0 custom-scrollbar">
+    <table class="w-full text-sm text-left">
+        <thead
+            class="text-xs text-muted-foreground uppercase bg-muted/95 backdrop-blur z-20 sticky top-0 border-b border-border">
+            <tr>
+                <th scope="col" class="px-6 py-4 font-semibold cursor-pointer hover:text-foreground transition-colors"
+                    (click)="sortBy('resource_name')">
+                    <div class="flex items-center space-x-1">
+                        <span>Anomaly ID</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                        </svg>
+                    </div>
+                </th>
+                <th scope="col" class="px-6 py-4 font-semibold cursor-pointer hover:text-foreground transition-colors"
+                    (click)="sortBy('accountLabel')">
+                    <div class="flex items-center space-x-1">
+                        <span>Account</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                        </svg>
+                    </div>
+                </th>
+                <th scope="col" class="px-6 py-4 font-semibold">
+                    <div class="flex items-center space-x-1">
+                        <span>Detection Date</span>
+                    </div>
+                </th>
+                <th scope="col" class="px-6 py-4 font-semibold">
+                    <div class="flex items-center space-x-1">
+                        <span>Root Cause (Service)</span>
+                    </div>
+                </th>
+                <th scope="col" class="px-6 py-4 font-semibold cursor-pointer hover:text-foreground transition-colors"
+                    (click)="sortBy('impact')">
+                    <div class="flex items-center space-x-1">
+                        <span>Total Impact</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                        </svg>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-border">
+            <ng-container *ngFor="let item of sortedData">
+                <tr class="hover:bg-muted/50 transition-colors group cursor-pointer" (click)="toggleRow(item.sk)">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <svg class="w-4 h-4 mr-2 transition-transform duration-200 text-muted-foreground"
+                                [class.rotate-90]="expandedRowId === item.sk" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
+                            <svg class="w-5 h-5 text-muted-foreground mr-3" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                </path>
+                            </svg>
+                            <div class="font-medium text-foreground" [title]="item.sk.split('#')[1]">{{
+                                item.sk.split('#')[1] | slice:0:20 }}{{item.sk.split('#')[1].length > 20 ? '...' : ''}}
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div
+                            class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-secondary text-secondary-foreground border border-border">
+                            {{ item.accountLabel }}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-foreground font-medium">
+                        {{ item.parsedAnomaly?.AnomalyStartDate | date:'mediumDate' }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-muted-foreground">
+                        <div *ngIf="item.parsedAnomaly?.RootCauses?.length > 0">
+                            {{ item.parsedAnomaly?.RootCauses[0]?.Service || 'Multiple...' }}
+                        </div>
+                        <div *ngIf="!item.parsedAnomaly?.RootCauses?.length" class="italic text-muted-foreground/50">
+                            Unknown
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span [ngClass]="getImpactBadgeStyle(item.parsedAnomaly?.TotalImpact)"
+                            class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border">
+                            ${{ item.parsedAnomaly?.TotalImpact | number:'1.2-2' }}
+                        </span>
+                    </td>
+                </tr>
+
+                <!-- Expanded Row Details -->
+                <tr *ngIf="expandedRowId === item.sk" class="bg-muted/10 border-b border-border shadow-inner">
+                    <td colspan="5" class="px-6 py-6">
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 p-5 rounded-xl bg-background border border-border/50 shadow-sm">
+                            <div class="space-y-1.5">
+                                <p class="text-[11px] text-muted-foreground font-semibold tracking-wider uppercase">
+                                    Actual Spend</p>
+                                <p class="text-xl font-bold text-foreground">
+                                    {{ item.parsedAnomaly?.TotalActualSpend !== undefined ? ('$' +
+                                    (item.parsedAnomaly?.TotalActualSpend | number:'1.2-2')) : 'N/A' }}
+                                </p>
+                            </div>
+                            <div class="space-y-1.5">
+                                <p class="text-[11px] text-muted-foreground font-semibold tracking-wider uppercase">
+                                    Expected Spend</p>
+                                <p class="text-xl font-bold text-foreground">
+                                    {{ item.parsedAnomaly?.TotalExpectedSpend !== undefined ? ('$' +
+                                    (item.parsedAnomaly?.TotalExpectedSpend | number:'1.2-2')) : 'N/A' }}
+                                </p>
+                            </div>
+                            <div class="space-y-1.5">
+                                <p class="text-[11px] text-muted-foreground font-semibold tracking-wider uppercase">
+                                    Severity / % Impact</p>
+                                <p class="text-xl font-bold text-red-500">
+                                    {{ item.parsedAnomaly?.TotalAnomalyPercentage ? ('+' +
+                                    (item.parsedAnomaly?.TotalAnomalyPercentage | number:'1.0-2') + '%') : 'N/A' }}
+                                </p>
+                            </div>
+                            <div class="space-y-1.5">
+                                <p class="text-[11px] text-muted-foreground font-semibold tracking-wider uppercase">Max
+                                    Anomaly Score</p>
+                                <p class="text-xl font-bold text-orange-500">
+                                    {{ item.parsedAnomaly?.MaxScore !== undefined ? (item.parsedAnomaly?.MaxScore |
+                                    number:'1.2-2') : 'N/A' }}
+                                </p>
+                            </div>
+
+                            <!-- Root Causes Full Details -->
+                            <div class="col-span-full pt-4 border-t border-border mt-2">
+                                <p
+                                    class="text-[11px] text-muted-foreground font-semibold tracking-wider uppercase mb-3">
+                                    Identified Root Causes</p>
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                                    <div *ngFor="let cause of item.parsedAnomaly?.RootCauses"
+                                        class="flex flex-col gap-2 bg-muted/30 p-3 rounded-lg border border-border/50">
+                                        <div class="flex flex-wrap gap-2">
+                                            <span *ngIf="cause.Service"
+                                                class="inline-flex items-center px-2 py-1 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 text-xs font-medium">
+                                                Service: {{ cause.Service }}
+                                            </span>
+                                            <span *ngIf="cause.UsageType"
+                                                class="inline-flex items-center px-2 py-1 rounded bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 text-xs font-medium">
+                                                UsageType: {{ cause.UsageType }}
+                                            </span>
+                                            <span *ngIf="cause.LinkedAccount"
+                                                class="inline-flex items-center px-2 py-1 rounded bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 text-xs font-medium">
+                                                Account: {{ cause.LinkedAccount }}
+                                            </span>
+                                            <span *ngIf="cause.Region"
+                                                class="inline-flex items-center px-2 py-1 rounded bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-xs font-medium">
+                                                Region: {{ cause.Region }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="!item.parsedAnomaly?.RootCauses?.length"
+                                        class="text-sm text-muted-foreground italic col-span-full">
+                                        No specific root causes identified by AWS Cost Explorer.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </ng-container>
+            <tr *ngIf="sortedData.length === 0">
+                <td colspan="5" class="px-6 py-12 text-center text-muted-foreground">
+                    <div class="flex flex-col items-center justify-center">
+                        <svg class="w-12 h-12 mb-4 text-muted-foreground/30" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <p class="text-lg font-medium">No cost anomalies detected</p>
+                        <p class="text-sm">AWS Cost Explorer has not flagged any anomalous spend for the selected
+                            filters.</p>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

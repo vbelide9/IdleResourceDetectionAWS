@@ -16,4 +16,12 @@ export interface Resource {
     ami_id?: string;
     ami_name?: string;
     ami_age_days?: number;
+    // Compute Optimizer fields
+    optimizer_finding?: string;
+    optimizer_recommendation?: string;
+    monthly_savings_opportunity?: number;
+    // ACM Certificate & Cost Anomaly extensions
+    acm_expiration_days?: number;
+    acm_expiration_date?: string;
+    anomaly_details?: string;
 }

@@ -6,12 +6,16 @@ import { Subscription } from 'rxjs';
 import { KpiCardsComponent } from './components/kpi-cards.component';
 import { DataTableComponent } from './components/data-table.component';
 import { AmiDataTableComponent } from './components/ami-data-table.component';
+import { OptimizerDataTableComponent } from './components/optimizer-data-table.component';
 import { ChartsComponent } from './components/charts/charts.component';
+import { CertificatesDataTableComponent } from './components/certificates-data-table.component';
+import { CostAnomaliesDataTableComponent } from './components/cost-anomalies-data-table.component';
+import { AdminPortalComponent } from './components/admin-portal.component';
 
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [CommonModule, KpiCardsComponent, DataTableComponent, AmiDataTableComponent, ChartsComponent],
+    imports: [CommonModule, KpiCardsComponent, DataTableComponent, AmiDataTableComponent, OptimizerDataTableComponent, ChartsComponent, CertificatesDataTableComponent, CostAnomaliesDataTableComponent, AdminPortalComponent],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css'
 })
@@ -26,12 +30,18 @@ export class AppComponent implements OnInit, OnDestroy {
     selectedEnv = 'All Envs';
     selectedTimeFrame = 'Overall';
 
-    activeTab: 'dashboard' | 'analytics' = 'dashboard';
+    activeTab: 'dashboard' | 'analytics' | 'optimization' | 'certificates' | 'costAnomalies' | 'admin' = 'dashboard';
 
     allData: Resource[] = [];
     filteredData: Resource[] = [];
     dashboardData: Resource[] = [];
     analyticsData: Resource[] = [];
+    optimizerData: Resource[] = [];
+    idleOptimizationData: Resource[] = [];
+    rightSizingOptimizationData: Resource[] = [];
+    certificatesData: Resource[] = [];
+    costAnomaliesData: Resource[] = [];
+    optimizationTab: 'idle' | 'rightSizing' = 'idle';
     errors: { account: string, error: string }[] = [];
     loading = true;
     sidebarOpen = false;
@@ -41,6 +51,11 @@ export class AppComponent implements OnInit, OnDestroy {
     averageIdleDuration = 0;
     idleOver14Days = 0;
     servicesAffected = 0;
+
+    // Optimization stats
+    totalPotentialSavings = 0;
+    idleSavings = 0;
+    rightSizingSavings = 0;
 
     isDarkMode = false;
 
@@ -99,7 +114,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.sidebarOpen = !this.sidebarOpen;
     }
 
-    switchTab(tab: 'dashboard' | 'analytics', event: Event) {
+    switchTab(tab: 'dashboard' | 'analytics' | 'optimization' | 'certificates' | 'costAnomalies' | 'admin', event: Event) {
         event.preventDefault();
         this.activeTab = tab;
         if (window.innerWidth < 768) {
@@ -156,6 +171,18 @@ export class AppComponent implements OnInit, OnDestroy {
             i.ami_id !== 'Unknown'
         );
 
+        // Optimization shows resources with active Compute Optimizer recommendations
+        this.optimizerData = this.filteredData.filter(i =>
+            i.optimizer_finding &&
+            i.optimizer_finding !== 'Unavailable'
+        );
+
+        this.idleOptimizationData = this.optimizerData.filter(i => i.optimizer_finding === 'Idle');
+        this.rightSizingOptimizationData = this.optimizerData.filter(i => i.optimizer_finding !== 'Idle');
+
+        this.certificatesData = this.filteredData.filter(i => i.type === 'ACM Certificate');
+        this.costAnomaliesData = this.filteredData.filter(i => i.type === 'Cost Anomaly');
+
         this.calculateStats();
     }
 
@@ -168,5 +195,9 @@ export class AppComponent implements OnInit, OnDestroy {
         this.idleOver14Days = this.dashboardData.filter(i => i.days_idle >= 14).length;
 
         this.servicesAffected = new Set(this.dashboardData.map(i => i.type)).size;
+
+        this.totalPotentialSavings = this.optimizerData.reduce((sum, item) => sum + (item.monthly_savings_opportunity || 0), 0);
+        this.idleSavings = this.idleOptimizationData.reduce((sum, item) => sum + (item.monthly_savings_opportunity || 0), 0);
+        this.rightSizingSavings = this.rightSizingOptimizationData.reduce((sum, item) => sum + (item.monthly_savings_opportunity || 0), 0);
     }
 }

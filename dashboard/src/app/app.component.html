@@ -2,7 +2,7 @@
 <div class="min-h-screen bg-background text-foreground flex relative font-sans transition-colors duration-300">
     <!-- Sidebar Container -->
     <aside
-        class="w-64 bg-card border-r border-border flex flex-col transition-transform duration-300 absolute md:relative z-20 h-full"
+        class="w-[280px] bg-card border-r border-border flex flex-col transition-transform duration-300 absolute md:relative z-20 h-full"
         [class.-translate-x-full]="!sidebarOpen" [class.md:translate-x-0]="true">
         <div class="p-6 border-b border-border h-16 flex items-center justify-between">
             <div class="flex items-center space-x-2">
@@ -37,7 +37,7 @@
                     <line x1="6" y1="18" x2="6.01" y2="18" stroke-linecap="round" stroke-linejoin="round"
                         stroke-width="2"></line>
                 </svg>
-                <span>Idle Resources Dashboard</span>
+                <span class="whitespace-nowrap">Idle Resources Dashboard</span>
             </a>
             <a href="#" (click)="switchTab('analytics', $event)"
                 [ngClass]="activeTab === 'analytics' ? 'bg-secondary text-secondary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'"
@@ -51,7 +51,16 @@
                     <line x1="12" y1="22.08" x2="12" y2="12" stroke-linecap="round" stroke-linejoin="round"
                         stroke-width="2"></line>
                 </svg>
-                <span>AMI Details</span>
+                <span class="whitespace-nowrap">AMI Details</span>
+            </a>
+            <a href="#" (click)="switchTab('optimization', $event)"
+                [ngClass]="activeTab === 'optimization' ? 'bg-secondary text-secondary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'"
+                class="flex items-center space-x-3 px-3 py-2 rounded-lg font-medium text-sm transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+                <span class="whitespace-nowrap">Optimization</span>
             </a>
             <a href="#"
                 class="flex items-center space-x-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground font-medium text-sm transition-colors">
@@ -60,7 +69,7 @@
                         d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
                     </path>
                 </svg>
-                <span>CAST scan status</span>
+                <span class="whitespace-nowrap">CAST Scan Status</span>
             </a>
             <a href="#"
                 class="flex items-center space-x-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground font-medium text-sm transition-colors">
@@ -69,16 +78,28 @@
                         d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
                     </path>
                 </svg>
-                <span>Archer exceptions</span>
+                <span class="whitespace-nowrap">Archer Exceptions</span>
             </a>
-            <a href="#"
-                class="flex items-center space-x-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground font-medium text-sm transition-colors">
+            <a href="#" (click)="switchTab('certificates', $event)"
+                [ngClass]="activeTab === 'certificates' ? 'bg-secondary text-secondary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'"
+                class="flex items-center space-x-3 px-3 py-2 rounded-lg font-medium text-sm transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z">
                     </path>
                 </svg>
-                <span>Certificate expirations</span>
+                <span class="whitespace-nowrap">Certificate Expirations</span>
+            </a>
+            <a href="#" (click)="switchTab('costAnomalies', $event)"
+                [ngClass]="activeTab === 'costAnomalies' ? 'bg-secondary text-secondary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'"
+                class="flex items-center space-x-3 px-3 py-2 rounded-lg font-medium text-sm transition-colors">
+                <!-- Simple Dollar/Line Chart SVG for cost anomalies -->
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                    </path>
+                </svg>
+                <span class="whitespace-nowrap">AWS Cost Anomalies</span>
             </a>
             <a href="#"
                 class="flex items-center space-x-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground font-medium text-sm transition-colors">
@@ -87,30 +108,28 @@
                         d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
                     </path>
                 </svg>
-                <span>CVE information</span>
+                <span class="whitespace-nowrap">CVE Information</span>
             </a>
-            <a href="#"
-                class="flex items-center space-x-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground font-medium text-sm transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+            <h3 class="px-3 mb-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase mt-6">Settings
+            </h3>
+            <a href="#" (click)="switchTab('admin', $event)"
+                [ngClass]="activeTab === 'admin' ? 'bg-secondary text-secondary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'"
+                class="flex items-center space-x-3 px-3 py-2 rounded-lg font-medium text-sm transition-colors group">
+                <svg class="w-4 h-4 transition-colors"
+                    [ngClass]="activeTab === 'admin' ? 'text-secondary-foreground' : 'text-muted-foreground group-hover:text-foreground'"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4">
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
                     </path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 </svg>
-                <span>Settings</span>
+                <span class="whitespace-nowrap">Certificate Management</span>
             </a>
         </nav>
 
-        <div class="p-4 border-t border-border">
-            <div class="flex items-center space-x-3 text-sm">
-                <div
-                    class="w-8 h-8 rounded-full bg-secondary flex items-center justify-center font-bold text-muted-foreground">
-                    VT</div>
-                <div>
-                    <p class="font-medium text-foreground">Varun T.</p>
-                    <p class="text-xs text-muted-foreground">Admin</p>
-                </div>
-            </div>
-        </div>
+
     </aside>
 
     <!-- Mobile Overlay -->
@@ -134,8 +153,16 @@
                     <svg class="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
-                    <span class="text-foreground font-medium">{{ activeTab === 'dashboard' ? 'Idle Resources Dashboard'
-                        : 'AMI Details' }}</span>
+                    <span class="text-foreground font-medium">
+                        {{
+                        activeTab === 'dashboard' ? 'Idle Resources Dashboard'
+                        : activeTab === 'analytics' ? 'AMI Details'
+                        : activeTab === 'optimization' ? 'Optimization Dashboard'
+                        : activeTab === 'certificates' ? 'Certificate Expirations'
+                        : activeTab === 'admin' ? 'Certificate Management'
+                        : 'Cost Anomalies'
+                        }}
+                    </span>
                 </div>
             </div>
 
@@ -173,29 +200,48 @@
 
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0">
                 <div>
-                    <h2 class="text-2xl font-bold tracking-tight text-foreground">Optimization Dashboard</h2>
-                    <p class="text-muted-foreground text-sm mt-1">Review identified idle infrastructure and potential
-                        savings.</p>
+                    <h2 class="text-2xl font-bold tracking-tight text-foreground">
+                        <ng-container [ngSwitch]="activeTab">
+                            <span *ngSwitchCase="'dashboard'">Overview</span>
+                            <span *ngSwitchCase="'analytics'">Analytics Explorer</span>
+                            <span *ngSwitchCase="'optimization'">Top Recommendations</span>
+                            <span *ngSwitchCase="'certificates'">Certificate Expirations</span>
+                            <span *ngSwitchCase="'costAnomalies'">AWS Cost Explorer Anomalies</span>
+                            <span *ngSwitchCase="'admin'">Certificate Management</span>
+                            <span *ngSwitchDefault>Dashboard</span>
+                        </ng-container>
+                    </h2>
+                    <p class="mt-1 text-sm text-muted-foreground relative z-10">
+                        <ng-container [ngSwitch]="activeTab">
+                            <span *ngSwitchCase="'dashboard'">Monitor your cloud infrastructure's health and
+                                efficiency.</span>
+                            <span *ngSwitchCase="'analytics'">Deep dive into specific idle resources across
+                                environments.</span>
+                            <ng-container *ngSwitchCase="'optimization'">Prioritized actions to reduce cloud waste and
+                                costs.</ng-container>
+                            <span *ngSwitchCase="'certificates'">Track certificates nearing their expiration
+                                date.</span>
+                            <span *ngSwitchCase="'costAnomalies'">Review unexpected spikes in AWS spending.</span>
+                            <span *ngSwitchCase="'admin'">Manually add and track non-ACM external certificates.</span>
+                            <span *ngSwitchDefault>Select a view to see details.</span>
+                        </ng-container>
+                    </p>
                 </div>
 
-                <div class="flex items-center space-x-2">
-                    <select
-                        class="bg-background border border-border rounded-md text-sm text-foreground px-3 py-2 outline-none cursor-pointer focus:ring-1 focus:ring-ring shadow-sm"
-                        [value]="selectedProject" (change)="selectProject($any($event.target).value)">
+                <div class="flex items-center space-x-2" *ngIf="activeTab !== 'admin'">
+                    <select class="custom-select" [value]="selectedProject"
+                        (change)="selectProject($any($event.target).value)">
                         <option value="All Projects">All Projects</option>
                         <option *ngFor="let p of projects" [value]="p">{{p}}</option>
                     </select>
 
-                    <select
-                        class="bg-background border border-border rounded-md text-sm text-foreground px-3 py-2 outline-none cursor-pointer focus:ring-1 focus:ring-ring shadow-sm"
-                        [value]="selectedEnv" (change)="selectEnv($any($event.target).value)">
+                    <select class="custom-select" [value]="selectedEnv" (change)="selectEnv($any($event.target).value)">
                         <option value="All Envs">All Envs</option>
                         <option *ngFor="let e of envs" [value]="e">{{e | uppercase}}</option>
                     </select>
 
-                    <select
-                        class="bg-background border border-border rounded-md text-sm text-foreground px-3 py-2 outline-none cursor-pointer focus:ring-1 focus:ring-ring shadow-sm"
-                        [value]="selectedTimeFrame" (change)="selectTimeFrame($any($event.target).value)">
+                    <select class="custom-select" [value]="selectedTimeFrame"
+                        (change)="selectTimeFrame($any($event.target).value)">
                         <option *ngFor="let tf of timeFrames" [value]="tf">{{tf}}</option>
                     </select>
                 </div>
@@ -266,6 +312,114 @@
                         </div>
                         <app-ami-data-table class="flex-1 flex flex-col min-h-0 relative"
                             [data]="analyticsData"></app-ami-data-table>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="activeTab === 'optimization'">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 shrink-0">
+                        <!-- Idle Savings KPI -->
+                        <div
+                            class="bg-card border border-border rounded-xl p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md flex flex-col relative overflow-hidden group">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3
+                                    class="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                                    Idle Resource Savings</h3>
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-orange-100/50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 flex items-center justify-center">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex items-baseline space-x-2">
+                                <span class="text-3xl font-bold tracking-tight text-foreground">${{idleSavings |
+                                    number:'1.2-2'}}</span>
+                                <span class="text-xs text-muted-foreground font-medium uppercase tracking-wider">/
+                                    mo</span>
+                            </div>
+                            <div
+                                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500/50 to-amber-400/50 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                            </div>
+                        </div>
+
+                        <!-- Right-Sizing Savings KPI -->
+                        <div
+                            class="bg-card border border-border rounded-xl p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md flex flex-col relative overflow-hidden group">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3
+                                    class="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                                    Right-Sizing Savings</h3>
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-green-100/50 dark:bg-green-900/20 text-green-600 dark:text-green-400 flex items-center justify-center">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                        </path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex items-baseline space-x-2">
+                                <span class="text-3xl font-bold tracking-tight text-foreground">${{rightSizingSavings
+                                    | number:'1.2-2'}}</span>
+                                <span class="text-xs text-muted-foreground font-medium uppercase tracking-wider">/
+                                    mo</span>
+                            </div>
+                            <div
+                                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-green-500/50 to-emerald-400/50 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-card border border-border rounded-xl shadow-sm overflow-hidden flex flex-col min-h-[850px] flex-1 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 mt-6">
+                        <div class="px-6 py-5 border-b border-border flex justify-between items-center shrink-0">
+                            <nav class="-mb-px flex space-x-8" aria-label="Optimization Tabs">
+                                <!-- Idle Tab -->
+                                <button (click)="optimizationTab = 'idle'"
+                                    [ngClass]="optimizationTab === 'idle' ? 'border-primary text-primary font-semibold shadow-[0_1px_0_0_hsl(var(--primary))]' : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'"
+                                    class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-all focus:outline-none">
+                                    Idle Resources
+                                </button>
+                                <!-- Right-sizing Tab -->
+                                <button (click)="optimizationTab = 'rightSizing'"
+                                    [ngClass]="optimizationTab === 'rightSizing' ? 'border-primary text-primary font-semibold shadow-[0_1px_0_0_hsl(var(--primary))]' : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'"
+                                    class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-all focus:outline-none">
+                                    Right-Sizing
+                                </button>
+                            </nav>
+                        </div>
+                        <app-optimizer-data-table class="flex-1 flex flex-col min-h-0 relative"
+                            [data]="optimizationTab === 'idle' ? idleOptimizationData : rightSizingOptimizationData"></app-optimizer-data-table>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="activeTab === 'certificates'">
+                    <div
+                        class="bg-card border border-border rounded-xl shadow-sm overflow-hidden flex flex-col min-h-[850px] flex-1 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <app-certificates-data-table class="flex-1 flex flex-col h-full relative"
+                            [data]="certificatesData"></app-certificates-data-table>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="activeTab === 'costAnomalies'">
+                    <div
+                        class="bg-card border border-border rounded-xl shadow-sm overflow-hidden flex flex-col min-h-[850px] flex-1 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="px-6 py-5 border-b border-border flex justify-between items-center shrink-0">
+                            <h3 class="text-base font-semibold text-foreground">AWS Cost Explorer Anomalies</h3>
+                        </div>
+                        <app-cost-anomalies-data-table class="flex-1 flex flex-col min-h-0 relative"
+                            [data]="costAnomaliesData"></app-cost-anomalies-data-table>
+                    </div>
+                </ng-container>
+
+                <!-- Admin Portal Tab -->
+                <ng-container *ngIf="activeTab === 'admin'">
+                    <div
+                        class="h-full relative filter-glass glass-panel rounded-xl border border-border/50 shadow-sm overflow-hidden flex flex-col">
+                        <div class="absolute inset-0 overflow-y-auto custom-scrollbar">
+                            <app-admin-portal></app-admin-portal>
+                        </div>
                     </div>
                 </ng-container>
             </ng-container>

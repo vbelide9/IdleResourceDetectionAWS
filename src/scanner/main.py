@@ -215,6 +215,10 @@ def write_to_dynamodb(table_name, resources):
                 "ami_name":      res.get("ami_name", ""),
                 "ami_age_days":  Decimal(f"{float(res.get('ami_age_days', 0.0)):.2f}"),
                 "instance_state": res.get("instance_state", "Unknown"),
+                # FinOps Feature: Compute Optimizer
+                "optimizer_finding": res.get("optimizer_finding", "Unavailable"),
+                "optimizer_recommendation": res.get("optimizer_recommendation", "None"),
+                "monthly_savings_opportunity": Decimal(f"{float(res.get('monthly_savings_opportunity', 0.0)):.2f}"),
                 # Fix #6 — use f-string formatting to avoid float precision loss
                 "idle_hours":    Decimal(f"{idle_hrs:.2f}"),
                 "idle_days":     Decimal(f"{idle_days:.2f}"),
@@ -226,6 +230,10 @@ def write_to_dynamodb(table_name, resources):
                 "expires_at":    expires_at,
                 # Fix 5 — persist size_gb for S3 buckets (0 for all other resource types)
                 "size_gb":       Decimal(f"{float(res.get('size_gb', 0)):.4f}"),
+                # New features for ACM and Cost anomalies
+                "anomaly_details": res.get("anomaly_details", "{}"),
+                "acm_expiration_days": Decimal(f"{float(res.get('acm_expiration_days', 0.0)):.2f}"),
+                "acm_expiration_date": res.get("acm_expiration_date", ""),
             }
             batch.put_item(Item=item)
 
@@ -359,11 +367,39 @@ def scan_ec2(aws_client, region, scan_ts):
                 idle_days  = idle_hours / 24.0
 
             is_idle = idle_hours >= 24.0
+            
+            # --- COMPUTE OPTIMIZER ENRICHMENT ---
+            optimizer_finding = "Unavailable"
+            optimizer_recommendation = "None"
+            monthly_savings_opportunity = 0.0
+
+            try:
+                co_client = aws_client.get_client("compute-optimizer", region)
+                co_response = co_client.get_ec2_instance_recommendations(
+                    instanceArns=[f"arn:aws:ec2:{region}:{boto3.client('sts').get_caller_identity()['Account']}:instance/{instance_id}"]
+                )
+                recommendations = co_response.get('instanceRecommendations', [])
+                if recommendations:
+                    rec = recommendations[0]
+                    optimizer_finding = rec.get("finding", "Unknown")
+                    
+                    if optimizer_finding in ["Overprovisioned", "Underprovisioned", "Optimized"]:
+                        options = rec.get("recommendationOptions", [])
+                        if options:
+                            best_option = options[0]
+                            optimizer_recommendation = f"Change to {best_option.get('instanceType', 'Unknown')}"
+                            monthly_savings_opportunity = float(best_option.get('savingsOpportunity', {}).get('estimatedMonthlySavings', {}).get('value', 0.0))
+            except Exception as e:
+                logger.debug(f"Compute Optimizer check failed for {instance_id}: {e}")
+                
             idle.append({
                 "ResourceId": instance_id, "Service": "EC2", "Region": region,
                 "status": "Idle" if is_idle else "Active",
                 "instance_state": state,
                 "ami_id": ami_id, "ami_name": ami_name, "ami_age_days": ami_age_days,
+                "optimizer_finding": optimizer_finding,
+                "optimizer_recommendation": optimizer_recommendation,
+                "monthly_savings_opportunity": monthly_savings_opportunity,
                 "IdleReason": "Low CPU (< 10%) AND NetworkOut (< 5MB)" if is_idle else "Actively Running",
                 "IdleStats": {
                     "last_active": final_la.isoformat() if final_la else None,
@@ -931,6 +967,123 @@ def scan_s3_bucket(aws_client, region, bucket_name, scan_ts):
 # --- LAMBDA HANDLER ---
 # Must be defined LAST — all scanner functions are defined above.
 
+def scan_acm_certificates(aws_client, region, scan_ts):
+    try:
+        acm = aws_client.get_client("acm", region)
+        idle = []
+        now = datetime.utcnow()
+
+        for page in acm.get_paginator("list_certificates").paginate():
+            for cert_summary in page.get("CertificateSummaryList", []):
+                cert_arn = cert_summary.get("CertificateArn")
+                if not cert_arn:
+                    continue
+                
+                try:
+                    cert_details = acm.describe_certificate(CertificateArn=cert_arn).get("Certificate", {})
+                except Exception as e:
+                    logger.warning(f"Error describing cert {cert_arn}: {e}")
+                    continue
+                
+                tags = {}
+                try:
+                    tag_resp = acm.list_tags_for_certificate(CertificateArn=cert_arn)
+                    tags = {t["Key"]: t["Value"] for t in tag_resp.get("Tags", [])}
+                except Exception:
+                    pass
+
+                if is_ignored(tags):
+                    continue
+                
+                not_after = cert_details.get("NotAfter")
+                if not not_after:
+                    continue
+                    
+                # NotAfter is usually tz-aware, make it naive for math
+                expiration_dt = not_after.replace(tzinfo=None)
+                days_until_expiration = (expiration_dt - now).total_seconds() / 86400.0
+                
+                # Flag certificates expiring in less than 30 days
+                is_idle = days_until_expiration < 30.0
+                
+                if is_idle:
+                    idle.append({
+                        "ResourceId": cert_details.get("DomainName", cert_arn.split("/")[-1]),
+                        "Service": "ACM", "Region": region,
+                        "IdleReason": f"Certificate expiring in {days_until_expiration:.1f} days",
+                        "IdleStats": {
+                            "last_active": None, "idle_until": now.isoformat(),
+                            "idle_hours": 0.0, "idle_days": 30.0,
+                            "DataStatus": "OK"
+                        },
+                        "acm_expiration_days": days_until_expiration,
+                        "acm_expiration_date": expiration_dt.isoformat(),
+                        "Tags": tags, "scan_ts": scan_ts
+                    })
+        return idle
+    except Exception as e:
+        logger.error(f"scan_acm_certificates failed in {region}: {e}")
+        return []
+
+
+def scan_cost_anomalies(aws_client, scan_ts):
+    """Hits AWS Cost Explorer (CE) to fetch anomalies from the last 30 days."""
+    try:
+        ce = aws_client.get_client("ce", "us-east-1")
+        idle = []
+        now = datetime.utcnow()
+        start_date = (now - timedelta(days=30)).strftime("%Y-%m-%d")
+        end_date = now.strftime("%Y-%m-%d")
+        
+        # Max results capped at 100 for CE, typically enough for active anomalies
+        response = ce.get_anomalies(
+            DateInterval={'StartDate': start_date, 'EndDate': end_date},
+            MaxResults=100
+        )
+        for anomaly in response.get("Anomalies", []):
+            anomaly_id = anomaly.get("AnomalyId", "Unknown")
+            reason_details = anomaly.get("RootCauses", [])
+            impact_obj = anomaly.get("Impact", {})
+            total_impact = float(impact_obj.get("TotalImpact", anomaly.get("TotalImpact", {}).get("TotalImpact", 0.0)))
+            actual_spend = float(impact_obj.get("TotalActualSpend", 0.0))
+            expected_spend = float(impact_obj.get("TotalExpectedSpend", 0.0))
+            anomaly_percent = float(impact_obj.get("TotalAnomalyPercentage", 0.0))
+            
+            score_obj = anomaly.get("AnomalyScore", {})
+            max_score = float(score_obj.get("MaxScore", 0.0))
+            
+            anomaly_details_json = json.dumps({
+                "TotalImpact": total_impact,
+                "TotalActualSpend": actual_spend,
+                "TotalExpectedSpend": expected_spend,
+                "TotalAnomalyPercentage": anomaly_percent,
+                "MaxScore": max_score,
+                "AnomalyStartDate": anomaly.get("AnomalyStartDate", ""),
+                "AnomalyEndDate": anomaly.get("AnomalyEndDate", ""),
+                "RootCauses": reason_details
+            })
+            
+            idle.append({
+                "ResourceId": f"CostAnomaly-{anomaly_id}",
+                "Service": "CostAnomaly", "Region": "global",
+                "IdleReason": f"Detected anomaly impact: ${total_impact:.2f}",
+                "IdleStats": {
+                    "last_active": None, "idle_until": now.isoformat(),
+                    "idle_hours": 0.0, "idle_days": 30.0,
+                    "DataStatus": "OK"
+                },
+                "anomaly_details": anomaly_details_json,
+                "Tags": {}, "scan_ts": scan_ts
+            })
+        return idle
+    except Exception as e:
+        logger.error(f"scan_cost_anomalies failed: {e}")
+        return []
+
+
+# --- LAMBDA HANDLER ---
+# Must be defined LAST — all scanner functions are defined above.
+
 def lambda_handler(event, context):
     logger.info("=== Idle Resource Scan Starting ===")
     table_name = os.environ.get("TABLE_NAME")
@@ -959,6 +1112,7 @@ def lambda_handler(event, context):
             futures[executor.submit(scan_unassociated_eip,aws, region, scan_ts)] = f"EIP:{region}"
             futures[executor.submit(scan_nat_gateway,     aws, region, scan_ts)] = f"NAT:{region}"
             futures[executor.submit(scan_ecs,             aws, region, scan_ts)] = f"ECS:{region}"
+            futures[executor.submit(scan_acm_certificates,aws, region, scan_ts)] = f"ACM:{region}"
 
         for future in as_completed(futures):
             label = futures[future]
@@ -970,7 +1124,7 @@ def lambda_handler(event, context):
             except Exception as e:
                 logger.error(f"  {label}: scan raised exception — {e}")
 
-    # ── S3 is global — scan after regional workers complete ───────────────────
+    # ── Global scans (S3, Cost Explorer) ──
     try:
         s3_client = aws.get_client("s3", "us-east-1")
         buckets   = s3_client.list_buckets().get("Buckets", [])
@@ -989,6 +1143,14 @@ def lambda_handler(event, context):
                 logger.warning(f"Skipping bucket {name}: {e}")
     except Exception as e:
         logger.error(f"S3 scan error: {e}")
+
+    try:
+        ce_results = scan_cost_anomalies(aws, scan_ts)
+        if ce_results:
+            logger.info(f"  CostAnomalies: {len(ce_results)} anomaly/ies found")
+            all_results.extend(ce_results)
+    except Exception as e:
+        logger.error(f"Cost Anomaly scan error: {e}")
 
     # ── Single DynamoDB write ─────────────────────────────────────────────────
     write_to_dynamodb(table_name, all_results)

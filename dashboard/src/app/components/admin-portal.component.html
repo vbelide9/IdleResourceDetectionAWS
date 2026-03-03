@@ -1,0 +1,145 @@
+<div class="max-w-4xl mx-auto p-6 lg:p-8">
+
+    <div class="max-w-3xl mx-auto p-6 lg:p-10">
+
+        <div class="mb-8 text-center">
+            <div
+                class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-primary mb-4 shadow-sm border border-primary/20">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                    </path>
+                </svg>
+            </div>
+            <h2 class="text-3xl font-extrabold tracking-tight text-foreground">Certificate Management</h2>
+            <p class="text-muted-foreground mt-3 text-lg">Track and manage your external, non-ACM certificates across
+                instances.</p>
+        </div>
+
+        <!-- Alert Messages -->
+        <div *ngIf="successMessage"
+            class="mb-6 p-4 rounded-lg bg-green-50 border border-green-200 text-green-700 flex items-center dark:bg-green-900/20 dark:border-green-800 dark:text-green-400">
+            <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"></path>
+            </svg>
+            {{ successMessage }}
+        </div>
+
+        <div *ngIf="errorMessage"
+            class="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 flex items-center dark:bg-red-900/20 dark:border-red-800 dark:text-red-400">
+            <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd"></path>
+            </svg>
+            {{ errorMessage }}
+        </div>
+
+        <!-- The Form -->
+        <div class="bg-card border border-border rounded-xl shadow-lg shadow-black/5 overflow-hidden">
+            <div class="p-6 border-b border-border bg-gradient-to-r from-muted/50 to-muted/10">
+                <h3 class="text-lg font-semibold text-foreground flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-muted-foreground" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Add New Certificate
+                </h3>
+                <p class="text-sm text-muted-foreground mt-1 text-balance">Enter the details of the external certificate
+                    down below to push it to your inventory table.</p>
+            </div>
+
+            <form (ngSubmit)="onSubmit()" #certForm="ngForm" class="p-8 space-y-8">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Domain / Resource Name -->
+                    <div class="space-y-2">
+                        <label for="domainName" class="block text-sm font-medium text-foreground">Domain Name <span
+                                class="text-red-500">*</span></label>
+                        <input type="text" id="domainName" name="domainName" required [(ngModel)]="newCert.domainName"
+                            placeholder="e.g. auth.legacy-system.com"
+                            class="w-full h-10 px-3 py-2 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-input transition-colors text-sm">
+                    </div>
+
+                    <!-- Vendor -->
+                    <div class="space-y-2">
+                        <label for="vendor" class="block text-sm font-medium text-foreground">Certificate Vendor</label>
+                        <input type="text" id="vendor" name="vendor" [(ngModel)]="newCert.vendor"
+                            placeholder="e.g. GoDaddy, Let's Encrypt"
+                            class="w-full h-10 px-3 py-2 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-input transition-colors text-sm">
+                    </div>
+
+                    <!-- Expiration Date -->
+                    <div class="space-y-2">
+                        <label for="expirationDate" class="block text-sm font-medium text-foreground">Expiration Date
+                            <span class="text-red-500">*</span></label>
+                        <input type="date" id="expirationDate" name="expirationDate" required
+                            [(ngModel)]="newCert.expirationDate"
+                            class="w-full h-10 px-3 py-2 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-input transition-colors text-sm text-foreground">
+                    </div>
+
+                    <!-- Renewal Date -->
+                    <div class="space-y-2">
+                        <label for="renewalDate" class="block text-sm font-medium text-foreground">Scheduled Renewal
+                            Date</label>
+                        <input type="date" id="renewalDate" name="renewalDate" [(ngModel)]="newCert.renewalDate"
+                            class="w-full h-10 px-3 py-2 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-input transition-colors text-sm text-foreground">
+                    </div>
+
+                    <!-- Project -->
+                    <div class="space-y-2">
+                        <label for="project" class="block text-sm font-medium text-foreground">Project</label>
+                        <select id="project" name="project" [(ngModel)]="newCert.project"
+                            class="w-full h-10 px-3 py-2 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-input transition-colors text-sm text-foreground">
+                            <option value="ICS-AEM">ICS-AEM</option>
+                            <option value="ICS-EM">ICS-EM</option>
+                            <option value="ICS-SDUI">ICS-SDUI</option>
+                            <option value="ICS-ES">ICS-ES</option>
+                        </select>
+                    </div>
+
+                    <!-- Environment -->
+                    <div class="space-y-2">
+                        <label for="env" class="block text-sm font-medium text-foreground">Environment</label>
+                        <select id="env" name="env" [(ngModel)]="newCert.env"
+                            class="w-full h-10 px-3 py-2 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-input transition-colors text-sm text-foreground">
+                            <option value="dev">DEV</option>
+                            <option value="tst">TST</option>
+                            <option value="prd">PRD</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <div class="space-y-2">
+                    <label for="notes" class="block text-sm font-medium text-foreground">Additional Notes</label>
+                    <textarea id="notes" name="notes" rows="3" [(ngModel)]="newCert.notes"
+                        placeholder="e.g. Requires manual DNS TXT validation by NetOps"
+                        class="w-full py-2 px-3 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-input transition-colors text-sm resize-y"></textarea>
+                </div>
+
+                <div class="pt-6 border-t border-border mt-4 flex justify-end">
+                    <button type="submit" [disabled]="!certForm.form.valid || isSubmitting"
+                        class="h-11 px-8 font-semibold bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center">
+                        <svg *ngIf="isSubmitting" class="animate-spin -ml-1 mr-2 h-5 w-5 text-current" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
+                        </svg>
+                        <svg *ngIf="!isSubmitting" class="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        {{ isSubmitting ? 'Saving...' : 'Add Certificate' }}
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>

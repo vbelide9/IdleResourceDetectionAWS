@@ -1,0 +1,180 @@
+<div class="overflow-x-auto">
+    <table class="w-full text-sm text-left align-middle border-collapse">
+        <thead
+            class="text-xs text-muted-foreground uppercase bg-muted/95 backdrop-blur sticky top-0 z-20 border-b border-border shadow-sm">
+            <tr>
+                <th scope="col" class="px-6 py-4 font-semibold cursor-pointer select-none group"
+                    (click)="sortBy('resource_name')">
+                    <div class="flex items-center gap-1 hover:text-foreground transition-colors">
+                        Resource Name
+                        <svg class="w-4 h-4 text-muted-foreground/50 transition-colors group-hover:text-foreground"
+                            *ngIf="sortColumn !== 'resource_name'" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                        </svg>
+                        <svg class="w-4 h-4 text-primary"
+                            *ngIf="sortColumn === 'resource_name' && sortDirection === 'asc'" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7">
+                            </path>
+                        </svg>
+                        <svg class="w-4 h-4 text-primary"
+                            *ngIf="sortColumn === 'resource_name' && sortDirection === 'desc'" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
+                    </div>
+                </th>
+                <th scope="col" class="px-6 py-4 font-semibold cursor-pointer select-none group"
+                    (click)="sortBy('env')">
+                    <div class="flex items-center gap-1 hover:text-foreground transition-colors">
+                        Env
+                        <svg class="w-4 h-4 text-muted-foreground/50 transition-colors group-hover:text-foreground"
+                            *ngIf="sortColumn !== 'env'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                        </svg>
+                        <svg class="w-4 h-4 text-primary" *ngIf="sortColumn === 'env' && sortDirection === 'asc'"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7">
+                            </path>
+                        </svg>
+                        <svg class="w-4 h-4 text-primary" *ngIf="sortColumn === 'env' && sortDirection === 'desc'"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
+                    </div>
+                </th>
+                <th scope="col" class="px-6 py-4 font-semibold cursor-pointer select-none group"
+                    (click)="sortBy('type')">
+                    <div class="flex items-center gap-1 hover:text-foreground transition-colors">
+                        Current Size
+                        <svg class="w-4 h-4 text-muted-foreground/50 transition-colors group-hover:text-foreground"
+                            *ngIf="sortColumn !== 'type'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                        </svg>
+                        <svg class="w-4 h-4 text-primary" *ngIf="sortColumn === 'type' && sortDirection === 'asc'"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7">
+                            </path>
+                        </svg>
+                        <svg class="w-4 h-4 text-primary" *ngIf="sortColumn === 'type' && sortDirection === 'desc'"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
+                    </div>
+                </th>
+                <th scope="col" class="px-6 py-4 font-semibold">
+                    Finding
+                </th>
+                <th scope="col" class="px-6 py-4 font-semibold">
+                    Recommendation
+                </th>
+                <th scope="col" class="px-6 py-4 font-semibold cursor-pointer select-none group"
+                    (click)="sortBy('monthly_savings_opportunity')">
+                    <div class="flex items-center gap-1 hover:text-foreground transition-colors justify-end">
+                        <svg class="w-4 h-4 text-muted-foreground/50 transition-colors group-hover:text-foreground"
+                            *ngIf="sortColumn !== 'monthly_savings_opportunity'" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                        </svg>
+                        <svg class="w-4 h-4 text-primary"
+                            *ngIf="sortColumn === 'monthly_savings_opportunity' && sortDirection === 'asc'" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7">
+                            </path>
+                        </svg>
+                        <svg class="w-4 h-4 text-primary"
+                            *ngIf="sortColumn === 'monthly_savings_opportunity' && sortDirection === 'desc'" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
+                        Potential Savings
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of paginatedData; let last = last"
+                class="hover:bg-muted/30 transition-colors duration-150" [ngClass]="{'border-b border-border': !last}">
+                <td class="px-6 py-4">
+                    <div class="flex flex-col">
+                        <span class="font-medium text-foreground">{{item.resource_name || item.sk.split('#')[3]}}</span>
+                        <span class="text-xs text-muted-foreground mt-0.5">{{item.region || 'us-east-1'}} <span
+                                class="mx-1">•</span> {{item.type}}</span>
+                    </div>
+                </td>
+                <td class="px-6 py-4">
+                    <span
+                        class="px-2.5 py-1 text-xs font-medium rounded-full bg-secondary text-secondary-foreground border border-border">
+                        {{(item.env || 'Unknown') | uppercase}}
+                    </span>
+                </td>
+                <td class="px-6 py-4 text-foreground">
+                    <div *ngIf="item.size_gb; else textType">{{item.size_gb}} GB</div>
+                    <ng-template #textType>-</ng-template>
+                </td>
+                <td class="px-6 py-4">
+                    <span [ngClass]="getBadgeClass(item.optimizer_finding)"
+                        class="px-2.5 py-1 text-xs font-medium rounded-full transition-colors">
+                        {{item.optimizer_finding || 'Unavailable'}}
+                    </span>
+                </td>
+                <td class="px-6 py-4">
+                    <span class="text-foreground text-sm">{{item.optimizer_recommendation || 'None'}}</span>
+                </td>
+                <td class="px-6 py-4 text-right">
+                    <span class="font-semibold"
+                        [ngClass]="(item.monthly_savings_opportunity || 0) > 0 ? 'text-green-600 dark:text-green-400' : 'text-foreground'">
+                        ${{(item.monthly_savings_opportunity || 0) | number:'1.2-2'}}
+                    </span>
+                </td>
+            </tr>
+
+            <!-- Empty State -->
+            <tr *ngIf="paginatedData.length === 0">
+                <td colspan="6" class="px-6 py-24 text-center">
+                    <div class="flex flex-col items-center justify-center space-y-3">
+                        <div class="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                            <svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                            </svg>
+                        </div>
+                        <p class="text-lg font-medium text-foreground tracking-tight">Fully Optimized</p>
+                        <p class="text-muted-foreground max-w-sm">No right-sizing recommendations were found for the
+                            selected filters.</p>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination Footer -->
+<div class="px-6 py-4 border-t border-border flex items-center justify-between text-sm bg-muted/10 shrink-0"
+    *ngIf="data.length > 0">
+    <div class="text-muted-foreground">
+        Showing <span class="font-medium text-foreground">{{(currentPage - 1) * pageSize + 1}}</span> to <span
+            class="font-medium text-foreground">{{Math.min(currentPage * pageSize, sortedData.length)}}</span> of <span
+            class="font-medium text-foreground">{{sortedData.length}}</span> recommendations
+    </div>
+    <div class="flex items-center space-x-2">
+        <button (click)="prevPage()" [disabled]="currentPage === 1"
+            class="px-3 py-1.5 border border-border rounded-md hover:bg-muted text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium">
+            Previous
+        </button>
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+            class="px-3 py-1.5 border border-border rounded-md hover:bg-muted text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium">
+            Next
+        </button>
+    </div>
+</div>

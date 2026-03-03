@@ -1,0 +1,143 @@
+<div class="flex flex-col h-full absolute inset-0 custom-scrollbar">
+    <div class="px-6 py-5 border-b border-border flex justify-between items-center shrink-0">
+        <h3 class="text-base font-semibold text-foreground">
+            {{ filterType === 'all' ? 'Expiring Certificates' : filterType === 'acm' ? 'Expiring ACM Certificates' :
+            'Expiring External Certificates' }}
+        </h3>
+    </div>
+    <div
+        class="p-4 border-b border-border bg-muted/20 flex flex-col sm:flex-row justify-between sm:items-center gap-3 shrink-0">
+        <h3 class="text-sm font-medium text-foreground">Filter Certificates:</h3>
+        <div class="flex flex-wrap gap-2">
+            <button (click)="setFilter('all')"
+                [ngClass]="filterType === 'all' ? 'bg-primary text-primary-foreground border-primary' : 'bg-background text-foreground border-input hover:bg-muted'"
+                class="px-3 py-1.5 text-xs font-medium rounded-full border transition-colors shadow-sm">All
+                Certificates</button>
+            <button (click)="setFilter('acm')"
+                [ngClass]="filterType === 'acm' ? 'bg-primary text-primary-foreground border-primary' : 'bg-background text-foreground border-input hover:bg-muted'"
+                class="px-3 py-1.5 text-xs font-medium rounded-full border transition-colors shadow-sm">ACM
+                Only</button>
+            <button (click)="setFilter('manual')"
+                [ngClass]="filterType === 'manual' ? 'bg-primary text-primary-foreground border-primary' : 'bg-background text-foreground border-input hover:bg-muted'"
+                class="px-3 py-1.5 text-xs font-medium rounded-full border transition-colors shadow-sm">External
+                Only</button>
+        </div>
+    </div>
+    <div class="overflow-x-auto flex-1 custom-scrollbar">
+        <table class="w-full text-sm text-left">
+            <thead
+                class="text-xs text-muted-foreground uppercase bg-muted/95 backdrop-blur z-20 sticky top-0 border-b border-border shadow-sm">
+                <tr>
+                    <th scope="col"
+                        class="px-6 py-4 font-semibold cursor-pointer hover:text-foreground transition-colors"
+                        (click)="sortBy('resource_name')">
+                        <div class="flex items-center space-x-1">
+                            <span>Domain Name</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                            </svg>
+                        </div>
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-4 font-semibold cursor-pointer hover:text-foreground transition-colors"
+                        (click)="sortBy('accountLabel')">
+                        <div class="flex items-center space-x-1">
+                            <span>Account</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                            </svg>
+                        </div>
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-4 font-semibold cursor-pointer hover:text-foreground transition-colors"
+                        (click)="sortBy('region')">
+                        <div class="flex items-center space-x-1">
+                            <span>Region</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                            </svg>
+                        </div>
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-4 font-semibold cursor-pointer hover:text-foreground transition-colors"
+                        (click)="sortBy('acm_expiration_date')">
+                        <div class="flex items-center space-x-1">
+                            <span>Expiration Date</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                            </svg>
+                        </div>
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-4 font-semibold cursor-pointer hover:text-foreground transition-colors"
+                        (click)="sortBy('acm_expiration_days')">
+                        <div class="flex items-center space-x-1">
+                            <span>Days Remaining</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                            </svg>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+                <tr *ngFor="let item of sortedData" class="hover:bg-muted/50 transition-colors group">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-muted-foreground mr-3" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                                </path>
+                            </svg>
+                            <div class="overflow-hidden">
+                                <div class="font-medium text-foreground truncate">{{ item.resource_name ||
+                                    item.sk.split('#')[1] }}</div>
+                                <div class="text-[10px] text-muted-foreground mt-0.5">{{ item.type }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div
+                            class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-secondary text-secondary-foreground border border-border">
+                            {{ item.accountLabel }}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-muted-foreground">
+                        {{ item.region }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-foreground font-medium">
+                        {{ item.acm_expiration_date | date:'mediumDate' }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span [ngClass]="getBadgeStyle(item.acm_expiration_days)"
+                            class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border">
+                            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            {{ item.acm_expiration_days }} days
+                        </span>
+                    </td>
+                </tr>
+                <tr *ngIf="sortedData.length === 0">
+                    <td colspan="5" class="px-6 py-12 text-center text-muted-foreground">
+                        <div class="flex flex-col items-center justify-center">
+                            <svg class="w-12 h-12 mb-4 text-muted-foreground/30" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <p class="text-lg font-medium">No expiring certificates found</p>
+                            <p class="text-sm">All certificates are healthy for the selected filters.</p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
