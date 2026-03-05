@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ChartsComponent } from './charts.component';
-import { Resource } from '../../models/resource.model';
+import { ChartsComponent } from '../../../app/components/charts/charts.component';
+import { Resource } from '../../../app/models/resource.model';
 import { SimpleChange } from '@angular/core';
 
 describe('ChartsComponent', () => {

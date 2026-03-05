@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AdminPortalComponent } from './admin-portal.component';
-import { ResourceService } from '../services/resource.service';
+import { AdminPortalComponent } from '../../app/components/admin-portal.component';
+import { ResourceService } from '../../app/services/resource.service';
 import { of, throwError } from 'rxjs';
 
 describe('AdminPortalComponent', () => {

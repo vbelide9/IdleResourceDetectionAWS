@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CostAnomaliesDataTableComponent } from './cost-anomalies-data-table.component';
-import { Resource } from '../models/resource.model';
+import { CostAnomaliesDataTableComponent } from '../../app/components/cost-anomalies-data-table.component';
+import { Resource } from '../../app/models/resource.model';
 import { SimpleChange } from '@angular/core';
 
 describe('CostAnomaliesDataTableComponent', () => {

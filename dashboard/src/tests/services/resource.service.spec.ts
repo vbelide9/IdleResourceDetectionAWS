@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { ResourceService } from './resource.service';
-import { Resource } from '../models/resource.model';
+import { ResourceService } from '../../app/services/resource.service';
+import { Resource } from '../../app/models/resource.model';
 import { firstValueFrom } from 'rxjs';
 
 describe('ResourceService', () => {

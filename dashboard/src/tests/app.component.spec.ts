@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AppComponent } from './app.component';
-import { ResourceService } from './services/resource.service';
+import { AppComponent } from '../app/app.component';
+import { ResourceService } from '../app/services/resource.service';
 import { of } from 'rxjs';
-import { Resource } from './models/resource.model';
+import { Resource } from '../app/models/resource.model';
 import { CommonModule } from '@angular/common';
 
 describe('AppComponent', () => {

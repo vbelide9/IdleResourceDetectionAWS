@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AmiDataTableComponent } from './ami-data-table.component';
-import { Resource } from '../models/resource.model';
+import { AmiDataTableComponent } from '../../app/components/ami-data-table.component';
+import { Resource } from '../../app/models/resource.model';
 import { vi } from 'vitest';
 
 describe('AmiDataTableComponent', () => {

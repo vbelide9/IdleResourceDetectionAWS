@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { KpiCardsComponent } from './kpi-cards.component';
+import { KpiCardsComponent } from '../../app/components/kpi-cards.component';
 
 describe('KpiCardsComponent', () => {
     let component: KpiCardsComponent;

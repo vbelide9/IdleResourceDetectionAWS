@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CertificatesDataTableComponent } from './certificates-data-table.component';
-import { Resource } from '../models/resource.model';
+import { CertificatesDataTableComponent } from '../../app/components/certificates-data-table.component';
+import { Resource } from '../../app/models/resource.model';
 import { SimpleChange } from '@angular/core';
 
 describe('CertificatesDataTableComponent', () => {
