@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,64 +7,96 @@
 @layer base {
     :root {
         --background: 0 0% 100%;
-        --foreground: 222.2 84% 4.9%;
+        --foreground: 224 71.4% 4.1%;
 
         --card: 0 0% 100%;
-        --card-foreground: 222.2 84% 4.9%;
+        --card-foreground: 224 71.4% 4.1%;
 
         --popover: 0 0% 100%;
-        --popover-foreground: 222.2 84% 4.9%;
+        --popover-foreground: 224 71.4% 4.1%;
 
-        --primary: 222.2 47.4% 11.2%;
-        --primary-foreground: 210 40% 98%;
+        --primary: 220.9 39.3% 11%;
+        --primary-foreground: 210 20% 98%;
 
-        --secondary: 210 40% 96.1%;
-        --secondary-foreground: 222.2 47.4% 11.2%;
+        --secondary: 220 14.3% 95.9%;
+        --secondary-foreground: 220.9 39.3% 11%;
 
-        --muted: 210 40% 96.1%;
-        --muted-foreground: 215.4 16.3% 46.9%;
+        --muted: 220 14.3% 95.9%;
+        --muted-foreground: 220 8.9% 46.1%;
 
-        --accent: 210 40% 96.1%;
-        --accent-foreground: 222.2 47.4% 11.2%;
+        --accent: 220 14.3% 95.9%;
+        --accent-foreground: 220.9 39.3% 11%;
 
         --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 210 40% 98%;
+        --destructive-foreground: 210 20% 98%;
 
-        --border: 214.3 31.8% 91.4%;
-        --input: 214.3 31.8% 91.4%;
-        --ring: 222.2 84% 4.9%;
+        --border: 220 13% 91%;
+        --input: 220 13% 91%;
+        --ring: 224 71.4% 4.1%;
 
         --radius: 0.5rem;
+
+        /* Sidebar */
+        --sidebar: 0 0% 98%;
+        --sidebar-foreground: 240 5.3% 26.1%;
+        --sidebar-border: 220 13% 91%;
+        --sidebar-accent: 220 14.3% 95.9%;
+        --sidebar-accent-foreground: 220.9 39.3% 11%;
+        --sidebar-primary: 220.9 39.3% 11%;
+        --sidebar-primary-foreground: 0 0% 98%;
+
+        /* Chart colors */
+        --chart-1: 12 76% 61%;
+        --chart-2: 173 58% 39%;
+        --chart-3: 197 37% 24%;
+        --chart-4: 43 74% 66%;
+        --chart-5: 27 87% 67%;
     }
 
     .dark {
-        --background: 222.2 84% 4.9%;
-        --foreground: 210 40% 98%;
+        --background: 224 71.4% 4.1%;
+        --foreground: 210 20% 98%;
 
-        --card: 222.2 84% 4.9%;
-        --card-foreground: 210 40% 98%;
+        --card: 224 71.4% 4.1%;
+        --card-foreground: 210 20% 98%;
 
-        --popover: 222.2 84% 4.9%;
-        --popover-foreground: 210 40% 98%;
+        --popover: 224 71.4% 4.1%;
+        --popover-foreground: 210 20% 98%;
 
-        --primary: 210 40% 98%;
-        --primary-foreground: 222.2 47.4% 11.2%;
+        --primary: 210 20% 98%;
+        --primary-foreground: 220.9 39.3% 11%;
 
-        --secondary: 217.2 32.6% 17.5%;
-        --secondary-foreground: 210 40% 98%;
+        --secondary: 215 27.9% 16.9%;
+        --secondary-foreground: 210 20% 98%;
 
-        --muted: 217.2 32.6% 17.5%;
-        --muted-foreground: 215 20.2% 65.1%;
+        --muted: 215 27.9% 16.9%;
+        --muted-foreground: 217.9 10.6% 64.9%;
 
-        --accent: 217.2 32.6% 17.5%;
-        --accent-foreground: 210 40% 98%;
+        --accent: 215 27.9% 16.9%;
+        --accent-foreground: 210 20% 98%;
 
         --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 210 40% 98%;
+        --destructive-foreground: 210 20% 98%;
 
-        --border: 217.2 32.6% 17.5%;
-        --input: 217.2 32.6% 17.5%;
-        --ring: 212.7 26.8% 83.9%;
+        --border: 215 27.9% 16.9%;
+        --input: 215 27.9% 16.9%;
+        --ring: 216 12.2% 83.9%;
+
+        /* Sidebar dark */
+        --sidebar: 224 71.4% 4.1%;
+        --sidebar-foreground: 210 20% 98%;
+        --sidebar-border: 215 27.9% 16.9%;
+        --sidebar-accent: 215 27.9% 16.9%;
+        --sidebar-accent-foreground: 210 20% 98%;
+        --sidebar-primary: 210 20% 98%;
+        --sidebar-primary-foreground: 220.9 39.3% 11%;
+
+        /* Chart colors */
+        --chart-1: 220 70% 50%;
+        --chart-2: 160 60% 45%;
+        --chart-3: 30 80% 55%;
+        --chart-4: 280 65% 60%;
+        --chart-5: 340 75% 55%;
     }
 }
 
@@ -76,6 +110,19 @@
 
     .dark .custom-select {
         background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f8fafc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    }
+
+    /* Sidebar nav item */
+    .nav-item {
+        @apply flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer;
+    }
+
+    .nav-item-inactive {
+        @apply text-muted-foreground hover:bg-accent hover:text-accent-foreground;
+    }
+
+    .nav-item-active {
+        @apply bg-primary text-primary-foreground shadow-sm;
     }
 }
 
@@ -91,20 +138,75 @@
     }
 }
 
-/* Custom scrollbar for data table */
+/* Animation keyframes */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.4s ease-out both;
+}
+
+.animate-slide-in-left {
+    animation: slideInLeft 0.3s ease-out both;
+}
+
+/* Staggered animation delays */
+.delay-1 {
+    animation-delay: 50ms;
+}
+
+.delay-2 {
+    animation-delay: 100ms;
+}
+
+.delay-3 {
+    animation-delay: 150ms;
+}
+
+.delay-4 {
+    animation-delay: 200ms;
+}
+
+/* Custom scrollbar */
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-    @apply bg-secondary/50;
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    @apply bg-muted-foreground/30 rounded-full border border-transparent bg-clip-content;
+    @apply bg-muted-foreground/20 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    @apply bg-muted-foreground/50;
+    @apply bg-muted-foreground/40;
+}
+
+/* Sidebar transition */
+.sidebar-transition {
+    transition: width 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }

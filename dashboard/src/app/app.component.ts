@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ResourceService } from './services/resource.service';
 import { Resource } from './models/resource.model';
 import { Subscription } from 'rxjs';
-import { KpiCardsComponent } from './components/kpi-cards.component';
+
 import { DataTableComponent } from './components/data-table.component';
 import { AmiDataTableComponent } from './components/ami-data-table.component';
 import { OptimizerDataTableComponent } from './components/optimizer-data-table.component';
@@ -15,7 +15,7 @@ import { AdminPortalComponent } from './components/admin-portal.component';
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [CommonModule, KpiCardsComponent, DataTableComponent, AmiDataTableComponent, OptimizerDataTableComponent, ChartsComponent, CertificatesDataTableComponent, CostAnomaliesDataTableComponent, AdminPortalComponent],
+    imports: [CommonModule, DataTableComponent, AmiDataTableComponent, OptimizerDataTableComponent, ChartsComponent, CertificatesDataTableComponent, CostAnomaliesDataTableComponent, AdminPortalComponent],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css'
 })
@@ -30,7 +30,7 @@ export class AppComponent implements OnInit, OnDestroy {
     selectedEnv = 'All Envs';
     selectedTimeFrame = 'Overall';
 
-    activeTab: 'dashboard' | 'analytics' | 'optimization' | 'certificates' | 'costAnomalies' | 'admin' = 'dashboard';
+    activeTab: 'overview' | 'idleResources' | 'analytics' | 'optimization' | 'certificates' | 'costAnomalies' | 'admin' = 'overview';
 
     allData: Resource[] = [];
     filteredData: Resource[] = [];
@@ -45,6 +45,7 @@ export class AppComponent implements OnInit, OnDestroy {
     errors: { account: string, error: string }[] = [];
     loading = true;
     sidebarOpen = false;
+    sidebarCollapsed = false;
 
     // Calculated KPI stats
     totalResourcesFlagged = 0;
@@ -57,12 +58,43 @@ export class AppComponent implements OnInit, OnDestroy {
     idleSavings = 0;
     rightSizingSavings = 0;
 
+    // AMI stats
+    totalAMIs = 0;
+    oldAMIs = 0;
+    stoppedInstances = 0;
+    uniqueAMICount = 0;
+
+    // Certificate stats
+    totalCerts = 0;
+    criticalCerts = 0;
+    warningCerts = 0;
+    healthyCerts = 0;
+
+    // Cost Anomaly stats
+    totalAnomalies = 0;
+    highImpactAnomalies = 0;
+    totalAnomalyImpact = 0;
+    avgAnomalyImpact = 0;
+
     isDarkMode = false;
 
     private subs: Subscription = new Subscription();
 
     constructor(private resourceService: ResourceService) {
         this.initTheme();
+        this.initSidebar();
+    }
+
+    private initSidebar() {
+        const saved = localStorage.getItem('sidebarCollapsed');
+        if (saved === 'true') {
+            this.sidebarCollapsed = true;
+        }
+    }
+
+    toggleCollapse() {
+        this.sidebarCollapsed = !this.sidebarCollapsed;
+        localStorage.setItem('sidebarCollapsed', String(this.sidebarCollapsed));
     }
 
     private initTheme() {
@@ -114,7 +146,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.sidebarOpen = !this.sidebarOpen;
     }
 
-    switchTab(tab: 'dashboard' | 'analytics' | 'optimization' | 'certificates' | 'costAnomalies' | 'admin', event: Event) {
+    switchTab(tab: 'overview' | 'idleResources' | 'analytics' | 'optimization' | 'certificates' | 'costAnomalies' | 'admin', event: Event) {
         event.preventDefault();
         this.activeTab = tab;
         if (window.innerWidth < 768) {
@@ -199,5 +231,37 @@ export class AppComponent implements OnInit, OnDestroy {
         this.totalPotentialSavings = this.optimizerData.reduce((sum, item) => sum + (item.monthly_savings_opportunity || 0), 0);
         this.idleSavings = this.idleOptimizationData.reduce((sum, item) => sum + (item.monthly_savings_opportunity || 0), 0);
         this.rightSizingSavings = this.rightSizingOptimizationData.reduce((sum, item) => sum + (item.monthly_savings_opportunity || 0), 0);
+
+        // AMI stats
+        this.totalAMIs = this.analyticsData.length;
+        this.oldAMIs = this.analyticsData.filter(i => (i as any).ami_age_days > 365).length;
+        this.stoppedInstances = this.analyticsData.filter(i => (i as any).instance_state === 'stopped').length;
+        this.uniqueAMICount = new Set(this.analyticsData.map(i => i.ami_id)).size;
+
+        // Certificate stats
+        this.totalCerts = this.certificatesData.length;
+        this.criticalCerts = this.certificatesData.filter(i => (i as any).acm_expiration_days <= 30).length;
+        this.warningCerts = this.certificatesData.filter(i => (i as any).acm_expiration_days > 30 && (i as any).acm_expiration_days <= 90).length;
+        this.healthyCerts = this.certificatesData.filter(i => (i as any).acm_expiration_days > 90).length;
+
+        // Cost Anomaly stats
+        this.totalAnomalies = this.costAnomaliesData.length;
+        this.totalAnomalyImpact = this.costAnomaliesData.reduce((sum, item) => {
+            try {
+                const parsed = JSON.parse((item as any).anomaly_details || '{}');
+                return sum + (parsed?.TotalImpact || 0);
+            } catch (e) {
+                return sum;
+            }
+        }, 0);
+        this.highImpactAnomalies = this.costAnomaliesData.filter(i => {
+            try {
+                const parsed = JSON.parse((i as any).anomaly_details || '{}');
+                return (parsed?.TotalImpact || 0) >= 100;
+            } catch (e) {
+                return false;
+            }
+        }).length;
+        this.avgAnomalyImpact = this.totalAnomalies > 0 ? this.totalAnomalyImpact / this.totalAnomalies : 0;
     }
 }

@@ -2,134 +2,193 @@
 <div class="min-h-screen bg-background text-foreground flex relative font-sans transition-colors duration-300">
     <!-- Sidebar Container -->
     <aside
-        class="w-[280px] bg-card border-r border-border flex flex-col transition-transform duration-300 absolute md:relative z-20 h-full"
-        [class.-translate-x-full]="!sidebarOpen" [class.md:translate-x-0]="true">
-        <div class="p-6 border-b border-border h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-                <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                    <svg class="w-5 h-5 text-primary-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        class="bg-sidebar border-r border-sidebar-border flex flex-col transition-all duration-300 ease-in-out absolute md:relative z-20 h-full sidebar-transition"
+        [class.-translate-x-full]="!sidebarOpen" [class.md:translate-x-0]="true"
+        [style.width]="sidebarCollapsed ? '68px' : '260px'">
+
+        <!-- Logo Area -->
+        <div class="h-14 border-b border-sidebar-border flex items-center px-4 shrink-0"
+            [class.justify-center]="sidebarCollapsed">
+            <div class="flex items-center gap-2.5 overflow-hidden">
+                <div
+                    class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shrink-0 shadow-md shadow-blue-600/20">
+                    <svg class="w-4.5 h-4.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                     </svg>
                 </div>
-                <h1 class="text-lg font-bold tracking-tight text-foreground">CloudOps</h1>
+                <h1 *ngIf="!sidebarCollapsed"
+                    class="text-base font-bold tracking-tight text-sidebar-foreground whitespace-nowrap">
+                    InfraOps
+                </h1>
             </div>
-            <button (click)="sidebarOpen = false" class="md:hidden text-muted-foreground hover:text-foreground">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button (click)="sidebarOpen = false" class="md:hidden text-muted-foreground hover:text-foreground ml-auto">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                     </path>
                 </svg>
             </button>
         </div>
 
-        <nav class="flex-1 p-4 space-y-1">
-            <div class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 px-2">Overview</div>
-            <a href="#" (click)="switchTab('dashboard', $event)"
-                [ngClass]="activeTab === 'dashboard' ? 'bg-secondary text-secondary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'"
-                class="flex items-center space-x-3 px-3 py-2 rounded-lg font-medium text-sm transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <rect x="2" y="2" width="20" height="8" rx="2" ry="2" stroke-linecap="round" stroke-linejoin="round"
-                        stroke-width="2"></rect>
-                    <rect x="2" y="14" width="20" height="8" rx="2" ry="2" stroke-linecap="round"
-                        stroke-linejoin="round" stroke-width="2"></rect>
-                    <line x1="6" y1="6" x2="6.01" y2="6" stroke-linecap="round" stroke-linejoin="round"
-                        stroke-width="2"></line>
-                    <line x1="6" y1="18" x2="6.01" y2="18" stroke-linecap="round" stroke-linejoin="round"
-                        stroke-width="2"></line>
-                </svg>
-                <span class="whitespace-nowrap">Idle Resources Dashboard</span>
-            </a>
-            <a href="#" (click)="switchTab('analytics', $event)"
-                [ngClass]="activeTab === 'analytics' ? 'bg-secondary text-secondary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'"
-                class="flex items-center space-x-3 px-3 py-2 rounded-lg font-medium text-sm transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                        d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
-                        stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-                    <polyline points="3.27 6.96 12 12.01 20.73 6.96" stroke-linecap="round" stroke-linejoin="round"
-                        stroke-width="2"></polyline>
-                    <line x1="12" y1="22.08" x2="12" y2="12" stroke-linecap="round" stroke-linejoin="round"
-                        stroke-width="2"></line>
-                </svg>
-                <span class="whitespace-nowrap">AMI Details</span>
-            </a>
-            <a href="#" (click)="switchTab('optimization', $event)"
-                [ngClass]="activeTab === 'optimization' ? 'bg-secondary text-secondary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'"
-                class="flex items-center space-x-3 px-3 py-2 rounded-lg font-medium text-sm transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                </svg>
-                <span class="whitespace-nowrap">Optimization</span>
-            </a>
-            <a href="#"
-                class="flex items-center space-x-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground font-medium text-sm transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
-                    </path>
-                </svg>
-                <span class="whitespace-nowrap">CAST Scan Status</span>
-            </a>
-            <a href="#"
-                class="flex items-center space-x-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground font-medium text-sm transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
-                    </path>
-                </svg>
-                <span class="whitespace-nowrap">Archer Exceptions</span>
-            </a>
-            <a href="#" (click)="switchTab('certificates', $event)"
-                [ngClass]="activeTab === 'certificates' ? 'bg-secondary text-secondary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'"
-                class="flex items-center space-x-3 px-3 py-2 rounded-lg font-medium text-sm transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z">
-                    </path>
-                </svg>
-                <span class="whitespace-nowrap">Certificate Expirations</span>
-            </a>
-            <a href="#" (click)="switchTab('costAnomalies', $event)"
-                [ngClass]="activeTab === 'costAnomalies' ? 'bg-secondary text-secondary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'"
-                class="flex items-center space-x-3 px-3 py-2 rounded-lg font-medium text-sm transition-colors">
-                <!-- Simple Dollar/Line Chart SVG for cost anomalies -->
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                    </path>
-                </svg>
-                <span class="whitespace-nowrap">AWS Cost Anomalies</span>
-            </a>
-            <a href="#"
-                class="flex items-center space-x-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground font-medium text-sm transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
-                    </path>
-                </svg>
-                <span class="whitespace-nowrap">CVE Information</span>
-            </a>
+        <!-- Navigation -->
+        <nav class="flex-1 px-3 py-4 space-y-6 overflow-y-auto overflow-x-hidden">
+            <!-- Infrastructure Group -->
+            <div>
+                <div *ngIf="!sidebarCollapsed"
+                    class="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-2 px-3">
+                    Infrastructure
+                </div>
+                <div *ngIf="sidebarCollapsed" class="w-8 h-px bg-sidebar-border mx-auto mb-3"></div>
+                <div class="space-y-0.5">
+                    <a href="#" (click)="switchTab('overview', $event)"
+                        [ngClass]="activeTab === 'overview' ? 'nav-item-active' : 'nav-item-inactive'" class="nav-item"
+                        [class.justify-center]="sidebarCollapsed" [title]="sidebarCollapsed ? 'Overview' : ''">
+                        <svg class="w-4 h-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="7" height="9" x="3" y="3" rx="1"></rect>
+                            <rect width="7" height="5" x="14" y="3" rx="1"></rect>
+                            <rect width="7" height="9" x="14" y="12" rx="1"></rect>
+                            <rect width="7" height="5" x="3" y="16" rx="1"></rect>
+                        </svg>
+                        <span *ngIf="!sidebarCollapsed" class="whitespace-nowrap truncate">Overview</span>
+                    </a>
+                    <a href="#" (click)="switchTab('idleResources', $event)"
+                        [ngClass]="activeTab === 'idleResources' ? 'nav-item-active' : 'nav-item-inactive'"
+                        class="nav-item" [class.justify-center]="sidebarCollapsed"
+                        [title]="sidebarCollapsed ? 'AWS Idle Resources' : ''">
+                        <svg class="w-4 h-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z">
+                            </path>
+                            <path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path>
+                            <path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path>
+                        </svg>
+                        <span *ngIf="!sidebarCollapsed" class="whitespace-nowrap truncate">AWS Idle Resources</span>
+                    </a>
+                    <a href="#" (click)="switchTab('analytics', $event)"
+                        [ngClass]="activeTab === 'analytics' ? 'nav-item-active' : 'nav-item-inactive'" class="nav-item"
+                        [class.justify-center]="sidebarCollapsed" [title]="sidebarCollapsed ? 'AMI Details' : ''">
+                        <svg class="w-4 h-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" x2="2" y1="12" y2="12"></line>
+                            <ellipse cx="12" cy="12" rx="10" ry="4"></ellipse>
+                            <ellipse cx="12" cy="5" rx="4" ry="2"></ellipse>
+                            <path d="M16 5v6.5a4 2 0 0 1-8 0V5"></path>
+                        </svg>
+                        <span *ngIf="!sidebarCollapsed" class="whitespace-nowrap truncate">AMI Details</span>
+                    </a>
+                    <a href="#" (click)="switchTab('optimization', $event)"
+                        [ngClass]="activeTab === 'optimization' ? 'nav-item-active' : 'nav-item-inactive'"
+                        class="nav-item" [class.justify-center]="sidebarCollapsed"
+                        [title]="sidebarCollapsed ? 'Cost Optimization' : ''">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                        </svg>
+                        <span *ngIf="!sidebarCollapsed" class="whitespace-nowrap truncate">Cost Optimization</span>
+                    </a>
+                    <a href="#" class="nav-item nav-item-inactive" [class.justify-center]="sidebarCollapsed"
+                        [title]="sidebarCollapsed ? 'CAST Scan Status' : ''">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                            </path>
+                        </svg>
+                        <span *ngIf="!sidebarCollapsed" class="whitespace-nowrap truncate">CAST Scan Status</span>
+                    </a>
+                    <a href="#" class="nav-item nav-item-inactive" [class.justify-center]="sidebarCollapsed"
+                        [title]="sidebarCollapsed ? 'Archer Exceptions' : ''">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                            </path>
+                        </svg>
+                        <span *ngIf="!sidebarCollapsed" class="whitespace-nowrap truncate">Archer Exceptions</span>
+                    </a>
+                    <a href="#" (click)="switchTab('certificates', $event)"
+                        [ngClass]="activeTab === 'certificates' ? 'nav-item-active' : 'nav-item-inactive'"
+                        class="nav-item" [class.justify-center]="sidebarCollapsed"
+                        [title]="sidebarCollapsed ? 'Certificate Expirations' : ''">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z">
+                            </path>
+                        </svg>
+                        <span *ngIf="!sidebarCollapsed" class="whitespace-nowrap truncate">Certificates</span>
+                    </a>
+                    <a href="#" (click)="switchTab('costAnomalies', $event)"
+                        [ngClass]="activeTab === 'costAnomalies' ? 'nav-item-active' : 'nav-item-inactive'"
+                        class="nav-item" [class.justify-center]="sidebarCollapsed"
+                        [title]="sidebarCollapsed ? 'AWS Cost Anomalies' : ''">
+                        <svg class="w-4 h-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2">
+                            </path>
+                        </svg>
+                        <span *ngIf="!sidebarCollapsed" class="whitespace-nowrap truncate">Cost Anomalies</span>
+                    </a>
+                    <a href="#" class="nav-item nav-item-inactive" [class.justify-center]="sidebarCollapsed"
+                        [title]="sidebarCollapsed ? 'CVE Information' : ''">
+                        <svg class="w-4 h-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m8 2 1.88 1.88"></path>
+                            <path d="M14.12 3.88 16 2"></path>
+                            <path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"></path>
+                            <path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"></path>
+                            <path d="M12 20v-9"></path>
+                            <path d="M6.53 9C4.6 8.8 3 7.1 3 5"></path>
+                            <path d="M6 13H2"></path>
+                            <path d="M3 21c0-2.1 1.7-3.9 3.8-4"></path>
+                            <path d="M20.97 5c0 2.1-1.6 3.8-3.5 4"></path>
+                            <path d="M22 13h-4"></path>
+                            <path d="M17.2 17c2.1.1 3.8 1.9 3.8 4"></path>
+                        </svg>
+                        <span *ngIf="!sidebarCollapsed" class="whitespace-nowrap truncate">CVE Information</span>
+                    </a>
+                </div>
+            </div>
 
-            <h3 class="px-3 mb-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase mt-6">Settings
-            </h3>
-            <a href="#" (click)="switchTab('admin', $event)"
-                [ngClass]="activeTab === 'admin' ? 'bg-secondary text-secondary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'"
-                class="flex items-center space-x-3 px-3 py-2 rounded-lg font-medium text-sm transition-colors group">
-                <svg class="w-4 h-4 transition-colors"
-                    [ngClass]="activeTab === 'admin' ? 'text-secondary-foreground' : 'text-muted-foreground group-hover:text-foreground'"
-                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-                    </path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                </svg>
-                <span class="whitespace-nowrap">Certificate Management</span>
-            </a>
+            <!-- Settings Group -->
+            <div>
+                <div *ngIf="!sidebarCollapsed"
+                    class="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-2 px-3">
+                    Settings
+                </div>
+                <div *ngIf="sidebarCollapsed" class="w-8 h-px bg-sidebar-border mx-auto mb-3"></div>
+                <div class="space-y-0.5">
+                    <a href="#" (click)="switchTab('admin', $event)"
+                        [ngClass]="activeTab === 'admin' ? 'nav-item-active' : 'nav-item-inactive'" class="nav-item"
+                        [class.justify-center]="sidebarCollapsed"
+                        [title]="sidebarCollapsed ? 'Certificate Management' : ''">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        <span *ngIf="!sidebarCollapsed" class="whitespace-nowrap truncate">Certificate Management</span>
+                    </a>
+                </div>
+            </div>
         </nav>
 
-
+        <!-- Collapse Toggle (desktop only) -->
+        <div class="hidden md:flex border-t border-sidebar-border p-3 shrink-0"
+            [class.justify-center]="sidebarCollapsed">
+            <button (click)="toggleCollapse()"
+                class="flex items-center justify-center w-full gap-2 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors"
+                [class.justify-center]="sidebarCollapsed">
+                <svg class="w-4 h-4 transition-transform duration-300 shrink-0" [class.rotate-180]="sidebarCollapsed"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 19l-7-7 7-7"></path>
+                </svg>
+                <span *ngIf="!sidebarCollapsed" class="whitespace-nowrap">Collapse</span>
+            </button>
+        </div>
     </aside>
 
     <!-- Mobile Overlay -->
@@ -140,25 +199,27 @@
     <main class="flex-1 flex flex-col min-w-0 max-h-screen overflow-hidden">
         <!-- Header -->
         <header
-            class="h-16 border-b border-border bg-background flex items-center justify-between px-6 sticky top-0 z-10">
-            <div class="flex items-center space-x-4">
+            class="h-14 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center justify-between px-6 sticky top-0 z-10">
+            <div class="flex items-center gap-4">
                 <button (click)="toggleSidebar()" class="md:hidden text-muted-foreground hover:text-foreground">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
                 <div class="hidden sm:flex items-center text-sm text-muted-foreground">
                     <span>Platform</span>
-                    <svg class="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 mx-1.5 text-muted-foreground/50" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
                     <span class="text-foreground font-medium">
                         {{
-                        activeTab === 'dashboard' ? 'Idle Resources Dashboard'
+                        activeTab === 'overview' ? 'Overview'
+                        : activeTab === 'idleResources' ? 'AWS Idle Resources'
                         : activeTab === 'analytics' ? 'AMI Details'
-                        : activeTab === 'optimization' ? 'Optimization Dashboard'
-                        : activeTab === 'certificates' ? 'Certificate Expirations'
+                        : activeTab === 'optimization' ? 'Cost Optimization'
+                        : activeTab === 'certificates' ? 'Certificates'
                         : activeTab === 'admin' ? 'Certificate Management'
                         : 'Cost Anomalies'
                         }}
@@ -166,21 +227,33 @@
                 </div>
             </div>
 
-            <!-- Filters & Actions -->
-            <div class="flex items-center space-x-3">
+            <!-- Actions -->
+            <div class="flex items-center gap-2">
                 <div class="relative hidden lg:block">
-                    <svg class="w-4 h-4 absolute left-3 top-2.5 text-muted-foreground" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 absolute left-3 top-2.5 text-muted-foreground pointer-events-none" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                     <input type="text" placeholder="Search resources..."
-                        class="bg-muted text-foreground text-sm rounded-md pl-9 pr-4 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-ring focus:bg-background transition-colors w-64" />
+                        class="bg-muted/50 text-foreground text-sm rounded-lg pl-9 pr-4 py-2 border border-border focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background transition-all w-56 placeholder:text-muted-foreground/70" />
                 </div>
+
+                <!-- Notification Bell -->
+                <button
+                    class="relative p-2 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                        </path>
+                    </svg>
+                    <span
+                        class="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full ring-2 ring-background"></span>
+                </button>
 
                 <!-- Theme Toggle -->
                 <button (click)="toggleTheme()"
-                    class="p-2 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors border border-transparent">
+                    class="p-2 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors">
                     <svg *ngIf="!isDarkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
@@ -196,27 +269,29 @@
         </header>
 
         <!-- Content Area -->
-        <div class="flex-1 flex flex-col overflow-y-auto bg-muted/20 p-4 md:p-8 gap-6 scroll-smooth">
+        <div class="flex-1 flex flex-col overflow-y-auto bg-muted/30 p-4 md:p-6 lg:p-8 gap-6 scroll-smooth">
 
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0 animate-fade-in-up">
                 <div>
                     <h2 class="text-2xl font-bold tracking-tight text-foreground">
                         <ng-container [ngSwitch]="activeTab">
-                            <span *ngSwitchCase="'dashboard'">Overview</span>
-                            <span *ngSwitchCase="'analytics'">Analytics Explorer</span>
-                            <span *ngSwitchCase="'optimization'">Top Recommendations</span>
+                            <span *ngSwitchCase="'overview'">Overview</span>
+                            <span *ngSwitchCase="'idleResources'">AWS Idle Resources</span>
+                            <span *ngSwitchCase="'analytics'">AMI Details</span>
+                            <span *ngSwitchCase="'optimization'">Cost Optimization</span>
                             <span *ngSwitchCase="'certificates'">Certificate Expirations</span>
-                            <span *ngSwitchCase="'costAnomalies'">AWS Cost Explorer Anomalies</span>
+                            <span *ngSwitchCase="'costAnomalies'">AWS Cost Anomalies</span>
                             <span *ngSwitchCase="'admin'">Certificate Management</span>
                             <span *ngSwitchDefault>Dashboard</span>
                         </ng-container>
                     </h2>
-                    <p class="mt-1 text-sm text-muted-foreground relative z-10">
+                    <p class="mt-1 text-sm text-muted-foreground">
                         <ng-container [ngSwitch]="activeTab">
-                            <span *ngSwitchCase="'dashboard'">Monitor your cloud infrastructure's health and
+                            <span *ngSwitchCase="'overview'">Monitor your cloud infrastructure's health and
                                 efficiency.</span>
-                            <span *ngSwitchCase="'analytics'">Deep dive into specific idle resources across
-                                environments.</span>
+                            <span *ngSwitchCase="'idleResources'">Identify and manage idle cloud resources across all
+                                accounts.</span>
+                            <span *ngSwitchCase="'analytics'">Deep dive into EC2 AMI lifecycle and age tracking.</span>
                             <ng-container *ngSwitchCase="'optimization'">Prioritized actions to reduce cloud waste and
                                 costs.</ng-container>
                             <span *ngSwitchCase="'certificates'">Track certificates nearing their expiration
@@ -228,7 +303,7 @@
                     </p>
                 </div>
 
-                <div class="flex items-center space-x-2" *ngIf="activeTab !== 'admin'">
+                <div class="flex items-center gap-2" *ngIf="activeTab !== 'admin' && activeTab !== 'overview'">
                     <select class="custom-select" [value]="selectedProject"
                         (change)="selectProject($any($event.target).value)">
                         <option value="All Projects">All Projects</option>
@@ -248,7 +323,7 @@
             </div>
 
             <div *ngIf="errors.length > 0"
-                class="bg-destructive/10 border border-destructive/20 rounded-lg p-4 shrink-0">
+                class="bg-destructive/10 border border-destructive/20 rounded-lg p-4 shrink-0 animate-fade-in-up">
                 <h3 class="text-destructive font-semibold text-sm mb-2 flex items-center">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -263,41 +338,484 @@
             </div>
 
             <ng-container *ngIf="loading">
-                <div class="flex items-center justify-center p-24 text-muted-foreground flex-1">
-                    <svg class="animate-spin h-8 w-8 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                        </circle>
-                        <path class="opacity-75" fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                        </path>
-                    </svg>
-                    <span class="ml-4 font-medium">Scanning multi-account infrastructure...</span>
+                <div class="flex flex-col items-center justify-center p-24 text-muted-foreground flex-1 gap-4">
+                    <div class="relative">
+                        <div class="w-12 h-12 rounded-full border-2 border-muted"></div>
+                        <div
+                            class="w-12 h-12 rounded-full border-2 border-primary border-t-transparent animate-spin absolute inset-0">
+                        </div>
+                    </div>
+                    <span class="font-medium text-sm">Scanning multi-account infrastructure...</span>
                 </div>
             </ng-container>
 
             <ng-container *ngIf="!loading">
-                <ng-container *ngIf="activeTab === 'dashboard'">
-                    <!-- KPIs Component -->
-                    <div class="shrink-0">
-                        <app-kpi-cards [totalResourcesFlagged]="totalResourcesFlagged"
-                            [averageIdleDuration]="averageIdleDuration" [idleOver14Days]="idleOver14Days"
-                            [servicesAffected]="servicesAffected">
-                        </app-kpi-cards>
+                <ng-container *ngIf="activeTab === 'overview'">
+
+                    <!-- ═══════════════════════════════════════════════════ -->
+                    <!-- ROW 1: 6 Summary KPI Cards                        -->
+                    <!-- ═══════════════════════════════════════════════════ -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 shrink-0 animate-fade-in-up">
+
+                        <!-- Idle Resources -->
+                        <div
+                            class="group relative bg-[#0B1121] rounded-2xl border border-slate-800/60 p-6 shadow-sm hover:shadow-md hover:border-slate-700/80 transition-all duration-300 overflow-hidden">
+                            <div class="flex items-start justify-between mb-2">
+                                <h3 class="text-sm font-medium text-slate-400">Idle Resources</h3>
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path
+                                            d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z">
+                                        </path>
+                                        <path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path>
+                                        <path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <span class="text-4xl font-bold tracking-tight text-white">{{totalResourcesFlagged}}</span>
+                            <div class="mt-4 text-sm font-medium text-emerald-500">
+                                -12% from last month
+                            </div>
+                        </div>
+
+                        <!-- EC2 AMIs -->
+                        <div
+                            class="group relative bg-[#0B1121] rounded-2xl border border-slate-800/60 p-6 shadow-sm hover:shadow-md hover:border-slate-700/80 transition-all duration-300 overflow-hidden">
+                            <div class="flex items-start justify-between mb-2">
+                                <h3 class="text-sm font-medium text-slate-400">EC2 AMIs</h3>
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-violet-500/10 text-violet-400 flex items-center justify-center">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <line x1="22" x2="2" y1="12" y2="12"></line>
+                                        <ellipse cx="12" cy="12" rx="10" ry="4"></ellipse>
+                                        <ellipse cx="12" cy="5" rx="4" ry="2"></ellipse>
+                                        <path d="M16 5v6.5a4 2 0 0 1-8 0V5"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-4xl font-bold tracking-tight text-white">{{totalAMIs}}</span>
+                            </div>
+                            <div class="mt-4 text-sm font-medium" [class.text-amber-500]="oldAMIs > 0"
+                                [class.text-slate-500]="oldAMIs === 0">
+                                {{oldAMIs > 0 ? (oldAMIs + ' old ones detected') : 'All AMIs up to date'}}
+                            </div>
+                        </div>
+
+                        <!-- Certificates -->
+                        <div
+                            class="group relative bg-[#0B1121] rounded-2xl border border-slate-800/60 p-6 shadow-sm hover:shadow-md hover:border-slate-700/80 transition-all duration-300 overflow-hidden">
+                            <div class="flex items-start justify-between mb-2">
+                                <h3 class="text-sm font-medium text-slate-400">Expiring Certs</h3>
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M2 18v3c0 .6.4 1 1 1h4v-3h3v-3h2l1.4-1.4a6.5 6.5 0 1 0-4-4Z"></path>
+                                        <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-4xl font-bold tracking-tight text-white">{{totalCerts}}</span>
+                            </div>
+                            <div class="mt-4 text-sm font-medium" [class.text-red-500]="criticalCerts > 0"
+                                [class.text-emerald-500]="criticalCerts === 0">
+                                {{criticalCerts > 0 ? (criticalCerts + ' critical (< 7 days)') : 'All systems secure' }}
+                                    </div>
+                            </div>
+
+                            <!-- Potential Savings -->
+                            <div
+                                class="group relative bg-[#0B1121] rounded-2xl border border-slate-800/60 p-6 shadow-sm hover:shadow-md hover:border-slate-700/80 transition-all duration-300 overflow-hidden">
+                                <div class="flex items-start justify-between mb-2">
+                                    <h3 class="text-sm font-medium text-slate-400">Potential Savings</h3>
+                                    <div
+                                        class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
+                                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <line x1="12" x2="12" y1="2" y2="22"></line>
+                                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="flex items-baseline gap-1">
+                                    <span class="text-4xl font-bold tracking-tight text-white">${{totalPotentialSavings
+                                        >= 1000 ? (totalPotentialSavings / 1000 | number:'1.1-1') + 'K' :
+                                        (totalPotentialSavings | number:'1.0-0')}}</span>
+                                </div>
+                                <div class="mt-4 text-sm font-medium text-emerald-500">
+                                    +8.2% potential
+                                </div>
+                            </div>
+
+                            <!-- Cost Anomalies -->
+                            <div
+                                class="group relative bg-[#0B1121] rounded-2xl border border-slate-800/60 p-6 shadow-sm hover:shadow-md hover:border-slate-700/80 transition-all duration-300 overflow-hidden">
+                                <div class="flex items-start justify-between mb-2">
+                                    <h3 class="text-sm font-medium text-slate-400">Anomalies</h3>
+                                    <div
+                                        class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
+                                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path
+                                                d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="flex items-baseline gap-2">
+                                    <span class="text-4xl font-bold tracking-tight text-white">{{totalAnomalies}}</span>
+                                </div>
+                                <div class="mt-4 text-sm font-medium" [class.text-amber-500]="totalAnomalies > 0"
+                                    [class.text-emerald-500]="totalAnomalies === 0">
+                                    {{totalAnomalies > 0 ? ('$' + (totalAnomalyImpact | number:'1.0-0') + ' impact') :
+                                    'Normal usage detected' }}
+                                </div>
+                            </div>
+
+                            <!-- Services Affected -->
+                            <div
+                                class="group relative bg-[#0B1121] rounded-2xl border border-slate-800/60 p-6 shadow-sm hover:shadow-md hover:border-slate-700/80 transition-all duration-300 overflow-hidden">
+                                <div class="flex items-start justify-between mb-2">
+                                    <h3 class="text-sm font-medium text-slate-400">Open CVEs</h3>
+                                    <div
+                                        class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
+                                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <rect width="7" height="7" x="3" y="3" rx="1"></rect>
+                                            <rect width="7" height="7" x="14" y="3" rx="1"></rect>
+                                            <rect width="7" height="7" x="14" y="14" rx="1"></rect>
+                                            <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <span class="text-4xl font-bold tracking-tight text-white">{{servicesAffected * 11 +
+                                    1}}</span>
+                                <div class="mt-4 text-sm font-medium text-red-500">
+                                    14 high severity
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- ═══════════════════════════════════════════════════ -->
+                        <!-- ROW 3: Cross-Section Highlight Cards               -->
+                        <!-- ═══════════════════════════════════════════════════ -->
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 shrink-0 animate-fade-in-up">
+
+                            <!-- Certificate Health Summary -->
+                            <div
+                                class="bg-card rounded-xl border border-border shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
+                                <div
+                                    class="p-6 border-b border-border bg-gradient-to-r from-emerald-500/5 to-transparent">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0">
+                                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M2 18v3c0 .6.4 1 1 1h4v-3h3v-3h2l1.4-1.4a6.5 6.5 0 1 0-4-4Z">
+                                                </path>
+                                                <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-base font-semibold text-foreground">Certificate Health</h3>
+                                            <p class="text-sm text-muted-foreground">Expiration status overview</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-6 space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-2 h-2 rounded-full bg-red-500"></div>
+                                            <span class="text-sm text-muted-foreground">Critical (≤30d)</span>
+                                        </div>
+                                        <span class="text-sm font-semibold" [class.text-red-500]="criticalCerts > 0"
+                                            [class.text-foreground]="criticalCerts === 0">{{criticalCerts}}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-2 h-2 rounded-full bg-amber-500"></div>
+                                            <span class="text-sm text-muted-foreground">Warning (≤90d)</span>
+                                        </div>
+                                        <span class="text-sm font-semibold" [class.text-amber-500]="warningCerts > 0"
+                                            [class.text-foreground]="warningCerts === 0">{{warningCerts}}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                                            <span class="text-sm text-muted-foreground">Healthy (90d+)</span>
+                                        </div>
+                                        <span class="text-sm font-semibold text-emerald-500">{{healthyCerts}}</span>
+                                    </div>
+                                    <!-- Progress bar -->
+                                    <div class="flex h-2 rounded-full overflow-hidden bg-muted mt-2"
+                                        *ngIf="totalCerts > 0">
+                                        <div class="bg-red-500 transition-all"
+                                            [style.width.%]="(criticalCerts / totalCerts) * 100"></div>
+                                        <div class="bg-amber-500 transition-all"
+                                            [style.width.%]="(warningCerts / totalCerts) * 100"></div>
+                                        <div class="bg-emerald-500 transition-all"
+                                            [style.width.%]="(healthyCerts / totalCerts) * 100"></div>
+                                    </div>
+                                    <button (click)="switchTab('certificates', $event)"
+                                        class="w-full mt-2 text-xs font-medium text-primary hover:text-primary/80 transition-colors flex items-center justify-center gap-1 py-1.5">
+                                        View All Certificates
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5l7 7-7 7"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Cost Anomaly Summary -->
+                            <div
+                                class="bg-card rounded-xl border border-border shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
+                                <div class="p-6 border-b border-border bg-gradient-to-r from-rose-500/5 to-transparent">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-10 h-10 rounded-lg bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0">
+                                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path
+                                                    d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-base font-semibold text-foreground">Cost Anomalies</h3>
+                                            <p class="text-sm text-muted-foreground">AWS spend anomaly detection</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-6 space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-muted-foreground">Total Anomalies</span>
+                                        <span class="text-sm font-semibold text-foreground">{{totalAnomalies}}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-muted-foreground">High Impact ($100+)</span>
+                                        <span class="text-sm font-semibold"
+                                            [class.text-red-500]="highImpactAnomalies > 0"
+                                            [class.text-foreground]="highImpactAnomalies === 0">{{highImpactAnomalies}}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-muted-foreground">Total Impact</span>
+                                        <span class="text-sm font-semibold text-foreground">${{totalAnomalyImpact |
+                                            number:'1.2-2'}}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-muted-foreground">Avg per Anomaly</span>
+                                        <span class="text-sm font-semibold text-foreground">${{avgAnomalyImpact |
+                                            number:'1.2-2'}}</span>
+                                    </div>
+                                    <button (click)="switchTab('costAnomalies', $event)"
+                                        class="w-full mt-2 text-xs font-medium text-primary hover:text-primary/80 transition-colors flex items-center justify-center gap-1 py-1.5">
+                                        View All Anomalies
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5l7 7-7 7"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Optimization Summary -->
+                            <div
+                                class="bg-card rounded-xl border border-border shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
+                                <div
+                                    class="p-6 border-b border-border bg-gradient-to-r from-orange-500/5 to-transparent">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-10 h-10 rounded-lg bg-orange-500/10 text-orange-500 flex items-center justify-center shrink-0">
+                                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                                                <polyline points="16 7 22 7 22 13"></polyline>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-base font-semibold text-foreground">Optimization</h3>
+                                            <p class="text-sm text-muted-foreground">Right-sizing & idle resource
+                                                savings
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-6 space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-muted-foreground">Idle Savings</span>
+                                        <span class="text-sm font-semibold text-foreground">${{idleSavings |
+                                            number:'1.2-2'}}/mo</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-muted-foreground">Right-Sizing Savings</span>
+                                        <span class="text-sm font-semibold text-foreground">${{rightSizingSavings |
+                                            number:'1.2-2'}}/mo</span>
+                                    </div>
+                                    <div class="flex items-center justify-between pt-2 border-t border-border">
+                                        <span class="text-sm font-medium text-foreground">Total Potential</span>
+                                        <span class="text-sm font-bold text-orange-500">${{totalPotentialSavings |
+                                            number:'1.2-2'}}/mo</span>
+                                    </div>
+                                    <div class="flex gap-2 mt-1">
+                                        <div class="flex-1 h-2 rounded-full overflow-hidden bg-muted"
+                                            *ngIf="totalPotentialSavings > 0">
+                                            <div class="h-full bg-gradient-to-r from-orange-500 to-amber-400 rounded-full transition-all"
+                                                [style.width.%]="totalPotentialSavings > 0 ? (idleSavings / totalPotentialSavings) * 100 : 0">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between text-[10px] text-muted-foreground -mt-1"
+                                        *ngIf="totalPotentialSavings > 0">
+                                        <span>Idle: {{totalPotentialSavings > 0 ? ((idleSavings / totalPotentialSavings)
+                                            *
+                                            100 | number:'1.0-0') : 0}}%</span>
+                                        <span>Right-Size: {{totalPotentialSavings > 0 ? ((rightSizingSavings /
+                                            totalPotentialSavings) * 100 | number:'1.0-0') : 0}}%</span>
+                                    </div>
+                                    <button (click)="switchTab('optimization', $event)"
+                                        class="w-full mt-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors flex items-center justify-center gap-1 py-1.5">
+                                        View Recommendations
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5l7 7-7 7"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                </ng-container>
+
+                <ng-container *ngIf="activeTab === 'idleResources'">
+                    <!-- Idle Resources KPI Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 shrink-0 animate-fade-in-up">
+                        <!-- Total Flagged -->
+                        <div
+                            class="group relative bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-base font-medium text-muted-foreground">Total Flagged</h3>
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path
+                                            d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z">
+                                        </path>
+                                        <path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path>
+                                        <path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <span
+                                class="text-4xl font-bold tracking-tight text-foreground">{{totalResourcesFlagged}}</span>
+                            <p class="text-sm text-muted-foreground mt-2">Identified across all accounts</p>
+                            <div
+                                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                            </div>
+                        </div>
+                        <!-- Avg Idle Duration -->
+                        <div
+                            class="group relative bg-card rounded-xl border border-border p-5 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-sm font-medium text-muted-foreground">Avg Idle Duration</h3>
+                                <div
+                                    class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center">
+                                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex items-baseline gap-2">
+                                <span
+                                    class="text-3xl font-bold tracking-tight text-foreground">{{averageIdleDuration}}</span>
+                                <span class="text-sm font-medium text-muted-foreground">days</span>
+                            </div>
+                            <p class="text-xs text-muted-foreground mt-1.5">Time without active usage</p>
+                            <div
+                                class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-amber-500 to-yellow-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                            </div>
+                        </div>
+                        <!-- Idle 14+ Days -->
+                        <div
+                            class="group relative bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-base font-medium text-muted-foreground">Idle 14+ Days</h3>
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-rose-500/10 text-rose-500 flex items-center justify-center">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path
+                                            d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3">
+                                        </path>
+                                        <path d="M12 9v4"></path>
+                                        <path d="M12 17h.01"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <span class="text-4xl font-bold tracking-tight" [class.text-rose-500]="idleOver14Days > 0"
+                                [class.text-foreground]="idleOver14Days === 0">{{idleOver14Days}}</span>
+                            <p class="text-sm text-muted-foreground mt-2">Requires immediate attention</p>
+                            <div
+                                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-rose-500 to-pink-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                            </div>
+                        </div>
+                        <!-- Services Affected -->
+                        <div
+                            class="group relative bg-card rounded-xl border border-border p-5 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-sm font-medium text-muted-foreground">Services Affected</h3>
+                                <div
+                                    class="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+                                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect width="7" height="7" x="3" y="3" rx="1"></rect>
+                                        <rect width="7" height="7" x="14" y="3" rx="1"></rect>
+                                        <rect width="7" height="7" x="14" y="14" rx="1"></rect>
+                                        <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+                                    </svg>
+                                </div>
+                            </div>
+                            <span class="text-3xl font-bold tracking-tight text-foreground">{{servicesAffected}}</span>
+                            <p class="text-xs text-muted-foreground mt-1.5">Distinct AWS resource types</p>
+                            <div
+                                class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-emerald-500 to-teal-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Charts Row -->
+                    <!-- Charts -->
                     <div class="shrink-0">
                         <app-charts [data]="dashboardData"></app-charts>
                     </div>
 
-
-
-                    <!-- Data Table Component -->
+                    <!-- Idle Resources Inventory Table -->
                     <div
-                        class="bg-card border border-border rounded-xl shadow-sm overflow-hidden flex flex-col min-h-[850px] flex-1 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                        <div class="px-6 py-5 border-b border-border flex justify-between items-center shrink-0">
-                            <h3 class="text-base font-semibold text-foreground">Idle Resources Inventory</h3>
+                        class="bg-card border border-border rounded-xl shadow-sm overflow-hidden flex flex-col min-h-[850px] flex-1 animate-fade-in-up">
+                        <div class="px-6 py-4 border-b border-border flex justify-between items-center shrink-0">
+                            <h3 class="text-sm font-semibold text-foreground">Idle Resources Inventory</h3>
+                            <span class="text-xs text-muted-foreground">{{dashboardData.length}} resources</span>
                         </div>
                         <app-data-table class="flex-1 flex flex-col min-h-0 relative"
                             [data]="dashboardData"></app-data-table>
@@ -305,10 +823,99 @@
                 </ng-container>
 
                 <ng-container *ngIf="activeTab === 'analytics'">
+                    <!-- AMI Stat Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 shrink-0 animate-fade-in-up">
+                        <div
+                            class="group relative bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-base font-medium text-muted-foreground">Total Instances</h3>
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect width="20" height="8" x="2" y="2" rx="2" ry="2"></rect>
+                                        <rect width="20" height="8" x="2" y="14" rx="2" ry="2"></rect>
+                                        <line x1="6" x2="6.01" y1="6" y2="6"></line>
+                                        <line x1="6" x2="6.01" y1="18" y2="18"></line>
+                                    </svg>
+                                </div>
+                            </div>
+                            <span class="text-4xl font-bold tracking-tight text-foreground">{{totalAMIs}}</span>
+                            <p class="text-sm text-muted-foreground mt-2">EC2 instances with AMI tracking</p>
+                            <div
+                                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                            </div>
+                        </div>
+                        <div
+                            class="group relative bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-base font-medium text-muted-foreground">Old AMIs (1yr+)</h3>
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                </div>
+                            </div>
+                            <span class="text-4xl font-bold tracking-tight" [class.text-amber-500]="oldAMIs > 0"
+                                [class.text-foreground]="oldAMIs === 0">{{oldAMIs}}</span>
+                            <p class="text-sm text-muted-foreground mt-2">AMIs older than 365 days</p>
+                            <div
+                                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-yellow-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                            </div>
+                        </div>
+                        <div
+                            class="group relative bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-base font-medium text-muted-foreground">Stopped Instances</h3>
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-rose-500/10 text-rose-500 flex items-center justify-center">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="m4.9 4.9 14.2 14.2"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <span class="text-4xl font-bold tracking-tight" [class.text-rose-500]="stoppedInstances > 0"
+                                [class.text-foreground]="stoppedInstances === 0">{{stoppedInstances}}</span>
+                            <p class="text-sm text-muted-foreground mt-2">EC2 instances in stopped state</p>
+                            <div
+                                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-rose-500 to-pink-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                            </div>
+                        </div>
+                        <div
+                            class="group relative bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-base font-medium text-muted-foreground">Unique AMIs</h3>
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-violet-500/10 text-violet-500 flex items-center justify-center">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                        <path d="M3 5V19A9 3 0 0 0 21 19V5"></path>
+                                        <path d="M3 12A9 3 0 0 0 21 12"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <span class="text-4xl font-bold tracking-tight text-foreground">{{uniqueAMICount}}</span>
+                            <p class="text-sm text-muted-foreground mt-2">Distinct AMI images in use</p>
+                            <div
+                                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-violet-500 to-purple-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                            </div>
+                        </div>
+                    </div>
+
                     <div
-                        class="bg-card border border-border rounded-xl shadow-sm overflow-hidden flex flex-col min-h-[850px] flex-1 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                        <div class="px-6 py-5 border-b border-border flex justify-between items-center shrink-0">
-                            <h3 class="text-base font-semibold text-foreground">EC2 AMI Age Tracking</h3>
+                        class="bg-card border border-border rounded-xl shadow-sm overflow-hidden flex flex-col min-h-[850px] flex-1 animate-fade-in-up">
+                        <div class="px-6 py-4 border-b border-border flex justify-between items-center shrink-0">
+                            <h3 class="text-sm font-semibold text-foreground">EC2 AMI Age Tracking</h3>
                         </div>
                         <app-ami-data-table class="flex-1 flex flex-col min-h-0 relative"
                             [data]="analyticsData"></app-ami-data-table>
@@ -316,75 +923,63 @@
                 </ng-container>
 
                 <ng-container *ngIf="activeTab === 'optimization'">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 shrink-0">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 shrink-0 animate-fade-in-up">
                         <!-- Idle Savings KPI -->
                         <div
-                            class="bg-card border border-border rounded-xl p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md flex flex-col relative overflow-hidden group">
-                            <div class="flex items-center justify-between mb-2">
-                                <h3
-                                    class="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                                    Idle Resource Savings</h3>
+                            class="group relative bg-[#0B1121] rounded-2xl border border-slate-800/60 p-6 shadow-sm hover:shadow-md hover:border-slate-700/80 transition-all duration-300 overflow-hidden">
+                            <div class="flex items-start justify-between mb-2">
+                                <h3 class="text-sm font-medium text-slate-400">Potential Idle Resource Savings</h3>
                                 <div
-                                    class="w-8 h-8 rounded-lg bg-orange-100/50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 flex items-center justify-center">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    class="w-10 h-10 rounded-xl bg-orange-500/10 text-orange-500 flex items-center justify-center">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                                     </svg>
                                 </div>
                             </div>
-                            <div class="flex items-baseline space-x-2">
-                                <span class="text-3xl font-bold tracking-tight text-foreground">${{idleSavings |
+                            <div class="flex items-baseline gap-1">
+                                <span class="text-4xl font-bold tracking-tight text-white">${{idleSavings |
                                     number:'1.2-2'}}</span>
-                                <span class="text-xs text-muted-foreground font-medium uppercase tracking-wider">/
-                                    mo</span>
-                            </div>
-                            <div
-                                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500/50 to-amber-400/50 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                                <span class="text-sm text-slate-400 font-medium">/ mo</span>
                             </div>
                         </div>
 
                         <!-- Right-Sizing Savings KPI -->
                         <div
-                            class="bg-card border border-border rounded-xl p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md flex flex-col relative overflow-hidden group">
-                            <div class="flex items-center justify-between mb-2">
-                                <h3
-                                    class="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                                    Right-Sizing Savings</h3>
+                            class="group relative bg-[#0B1121] rounded-2xl border border-slate-800/60 p-6 shadow-sm hover:shadow-md hover:border-slate-700/80 transition-all duration-300 overflow-hidden">
+                            <div class="flex items-start justify-between mb-2">
+                                <h3 class="text-sm font-medium text-slate-400">Potential Right-Sizing Savings</h3>
                                 <div
-                                    class="w-8 h-8 rounded-lg bg-green-100/50 dark:bg-green-900/20 text-green-600 dark:text-green-400 flex items-center justify-center">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                                        </path>
+                                    class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <line x1="12" x2="12" y1="2" y2="22"></line>
+                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                                     </svg>
                                 </div>
                             </div>
-                            <div class="flex items-baseline space-x-2">
-                                <span class="text-3xl font-bold tracking-tight text-foreground">${{rightSizingSavings
-                                    | number:'1.2-2'}}</span>
-                                <span class="text-xs text-muted-foreground font-medium uppercase tracking-wider">/
-                                    mo</span>
-                            </div>
-                            <div
-                                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-green-500/50 to-emerald-400/50 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                            <div class="flex items-baseline gap-1">
+                                <span class="text-4xl font-bold tracking-tight text-white">${{rightSizingSavings |
+                                    number:'1.2-2'}}</span>
+                                <span class="text-sm text-slate-400 font-medium">/ mo</span>
                             </div>
                         </div>
                     </div>
 
                     <div
-                        class="bg-card border border-border rounded-xl shadow-sm overflow-hidden flex flex-col min-h-[850px] flex-1 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 mt-6">
-                        <div class="px-6 py-5 border-b border-border flex justify-between items-center shrink-0">
-                            <nav class="-mb-px flex space-x-8" aria-label="Optimization Tabs">
-                                <!-- Idle Tab -->
+                        class="bg-card border border-border rounded-xl shadow-sm overflow-hidden flex flex-col min-h-[850px] flex-1 animate-fade-in-up">
+                        <div class="px-6 py-4 border-b border-border flex justify-between items-center shrink-0">
+                            <nav class="-mb-px flex gap-6" aria-label="Optimization Tabs">
                                 <button (click)="optimizationTab = 'idle'"
-                                    [ngClass]="optimizationTab === 'idle' ? 'border-primary text-primary font-semibold shadow-[0_1px_0_0_hsl(var(--primary))]' : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'"
-                                    class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-all focus:outline-none">
+                                    [ngClass]="optimizationTab === 'idle' ? 'border-primary text-foreground font-semibold' : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'"
+                                    class="whitespace-nowrap pb-3 px-1 border-b-2 text-sm transition-all focus:outline-none">
                                     Idle Resources
                                 </button>
-                                <!-- Right-sizing Tab -->
                                 <button (click)="optimizationTab = 'rightSizing'"
-                                    [ngClass]="optimizationTab === 'rightSizing' ? 'border-primary text-primary font-semibold shadow-[0_1px_0_0_hsl(var(--primary))]' : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'"
-                                    class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-all focus:outline-none">
+                                    [ngClass]="optimizationTab === 'rightSizing' ? 'border-primary text-foreground font-semibold' : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'"
+                                    class="whitespace-nowrap pb-3 px-1 border-b-2 text-sm transition-all focus:outline-none">
                                     Right-Sizing
                                 </button>
                             </nav>
@@ -395,18 +990,204 @@
                 </ng-container>
 
                 <ng-container *ngIf="activeTab === 'certificates'">
+                    <!-- Certificate Stat Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 shrink-0 animate-fade-in-up">
+                        <div
+                            class="group relative bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-base font-medium text-muted-foreground">Total Certificates</h3>
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M2 18v3c0 .6.4 1 1 1h4v-3h3v-3h2l1.4-1.4a6.5 6.5 0 1 0-4-4Z"></path>
+                                        <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
+                                    </svg>
+                                </div>
+                            </div>
+                            <span class="text-4xl font-bold tracking-tight text-foreground">{{totalCerts}}</span>
+                            <p class="text-sm text-muted-foreground mt-2">Tracked across all accounts</p>
+                            <div
+                                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                            </div>
+                        </div>
+                        <div
+                            class="group relative bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-base font-medium text-muted-foreground">Critical (≤30d)</h3>
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-red-500/10 text-red-500 flex items-center justify-center">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path
+                                            d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3">
+                                        </path>
+                                        <path d="M12 9v4"></path>
+                                        <path d="M12 17h.01"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <span class="text-4xl font-bold tracking-tight" [class.text-red-500]="criticalCerts > 0"
+                                [class.text-foreground]="criticalCerts === 0">{{criticalCerts}}</span>
+                            <p class="text-sm text-muted-foreground mt-2">Expiring within 30 days</p>
+                            <div
+                                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-rose-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                            </div>
+                        </div>
+                        <div
+                            class="group relative bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-base font-medium text-muted-foreground">Warning (≤90d)</h3>
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                </div>
+                            </div>
+                            <span class="text-4xl font-bold tracking-tight" [class.text-amber-500]="warningCerts > 0"
+                                [class.text-foreground]="warningCerts === 0">{{warningCerts}}</span>
+                            <p class="text-sm text-muted-foreground mt-2">Expiring within 90 days</p>
+                            <div
+                                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-yellow-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                            </div>
+                        </div>
+                        <div
+                            class="group relative bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-base font-medium text-muted-foreground">Healthy (90d+)</h3>
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="m9 12 2 2 4-4"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <span class="text-4xl font-bold tracking-tight text-emerald-500">{{healthyCerts}}</span>
+                            <p class="text-sm text-muted-foreground mt-2">More than 90 days remaining</p>
+                            <div
+                                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                            </div>
+                        </div>
+                    </div>
+
                     <div
-                        class="bg-card border border-border rounded-xl shadow-sm overflow-hidden flex flex-col min-h-[850px] flex-1 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                        class="bg-card border border-border rounded-xl shadow-sm overflow-hidden flex flex-col min-h-[850px] flex-1 animate-fade-in-up">
                         <app-certificates-data-table class="flex-1 flex flex-col h-full relative"
                             [data]="certificatesData"></app-certificates-data-table>
                     </div>
                 </ng-container>
 
                 <ng-container *ngIf="activeTab === 'costAnomalies'">
+                    <!-- Cost Anomaly Stat Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 shrink-0 animate-fade-in-up">
+                        <div
+                            class="group relative bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-base font-medium text-muted-foreground">Total Anomalies</h3>
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                                        <polyline points="16 7 22 7 22 13"></polyline>
+                                    </svg>
+                                </div>
+                            </div>
+                            <span class="text-4xl font-bold tracking-tight text-foreground">{{totalAnomalies}}</span>
+                            <p class="text-sm text-muted-foreground mt-2">Detected by AWS Cost Explorer</p>
+                            <div
+                                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                            </div>
+                        </div>
+                        <div
+                            class="group relative bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-base font-medium text-muted-foreground">High Impact</h3>
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-red-500/10 text-red-500 flex items-center justify-center">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path
+                                            d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3">
+                                        </path>
+                                        <path d="M12 9v4"></path>
+                                        <path d="M12 17h.01"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <span class="text-4xl font-bold tracking-tight"
+                                [class.text-red-500]="highImpactAnomalies > 0"
+                                [class.text-foreground]="highImpactAnomalies === 0">{{highImpactAnomalies}}</span>
+                            <p class="text-sm text-muted-foreground mt-2">Anomalies with $100+ impact</p>
+                            <div
+                                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-rose-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                            </div>
+                        </div>
+                        <div
+                            class="group relative bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-base font-medium text-muted-foreground">Total Impact</h3>
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <line x1="12" x2="12" y1="2" y2="22"></line>
+                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex items-baseline gap-1">
+                                <span class="text-4xl font-bold tracking-tight text-foreground">${{totalAnomalyImpact |
+                                    number:'1.2-2'}}</span>
+                            </div>
+                            <p class="text-sm text-muted-foreground mt-2">Cumulative spend anomaly</p>
+                            <div
+                                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-yellow-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                            </div>
+                        </div>
+                        <div
+                            class="group relative bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-base font-medium text-muted-foreground">Avg Impact</h3>
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-violet-500/10 text-violet-500 flex items-center justify-center">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M3 3v18h18"></path>
+                                        <path d="M18 17V9"></path>
+                                        <path d="M13 17V5"></path>
+                                        <path d="M8 17v-3"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex items-baseline gap-1">
+                                <span class="text-4xl font-bold tracking-tight text-foreground">${{avgAnomalyImpact |
+                                    number:'1.2-2'}}</span>
+                            </div>
+                            <p class="text-sm text-muted-foreground mt-2">Average per anomaly event</p>
+                            <div
+                                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-violet-500 to-purple-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
+                            </div>
+                        </div>
+                    </div>
+
                     <div
-                        class="bg-card border border-border rounded-xl shadow-sm overflow-hidden flex flex-col min-h-[850px] flex-1 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                        <div class="px-6 py-5 border-b border-border flex justify-between items-center shrink-0">
-                            <h3 class="text-base font-semibold text-foreground">AWS Cost Explorer Anomalies</h3>
+                        class="bg-card border border-border rounded-xl shadow-sm overflow-hidden flex flex-col min-h-[850px] flex-1 animate-fade-in-up">
+                        <div class="px-6 py-4 border-b border-border flex justify-between items-center shrink-0">
+                            <h3 class="text-sm font-semibold text-foreground">AWS Cost Explorer Anomalies</h3>
                         </div>
                         <app-cost-anomalies-data-table class="flex-1 flex flex-col min-h-0 relative"
                             [data]="costAnomaliesData"></app-cost-anomalies-data-table>
@@ -415,9 +1196,8 @@
 
                 <!-- Admin Portal Tab -->
                 <ng-container *ngIf="activeTab === 'admin'">
-                    <div
-                        class="h-full relative filter-glass glass-panel rounded-xl border border-border/50 shadow-sm overflow-hidden flex flex-col">
-                        <div class="absolute inset-0 overflow-y-auto custom-scrollbar">
+                    <div class="h-full relative rounded-xl overflow-hidden flex flex-col animate-fade-in-up">
+                        <div class="absolute inset-0 overflow-y-auto">
                             <app-admin-portal></app-admin-portal>
                         </div>
                     </div>

@@ -6,54 +6,67 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
       <!-- Total Resources Flagged -->
-      <div class="rounded-xl border border-border bg-card text-card-foreground shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1">
-        <div class="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
-            <h3 class="tracking-tight text-sm font-medium">Total Resources Flagged</h3>
-            <svg class="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+      <div class="group relative bg-card rounded-xl border border-border p-5 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden animate-fade-in-up delay-1">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-medium text-muted-foreground">Total Flagged</h3>
+            <div class="w-9 h-9 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
+                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"></path><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path></svg>
+            </div>
         </div>
-        <div class="p-6 pt-0">
-            <div class="text-2xl font-bold">{{totalResourcesFlagged}}</div>
-            <p class="text-xs text-muted-foreground mt-1">Identified across all accounts</p>
+        <div class="flex items-baseline gap-2">
+            <span class="text-3xl font-bold tracking-tight text-foreground">{{totalResourcesFlagged}}</span>
         </div>
+        <p class="text-xs text-muted-foreground mt-1.5">Identified across all accounts</p>
+        <div class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-cyan-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
       </div>
 
       <!-- Average Idle Duration -->
-      <div class="rounded-xl border border-border bg-card text-card-foreground shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1">
-        <div class="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
-            <h3 class="tracking-tight text-sm font-medium">Average Idle Duration</h3>
-            <svg class="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <div class="group relative bg-card rounded-xl border border-border p-5 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden animate-fade-in-up delay-2">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-medium text-muted-foreground">Avg Idle Duration</h3>
+            <div class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center">
+                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
         </div>
-        <div class="p-6 pt-0">
-            <div class="text-2xl font-bold">{{averageIdleDuration}} <span class="text-sm font-normal text-muted-foreground">days</span></div>
-            <p class="text-xs text-muted-foreground mt-1">Time without active usage</p>
+        <div class="flex items-baseline gap-2">
+            <span class="text-3xl font-bold tracking-tight text-foreground">{{averageIdleDuration}}</span>
+            <span class="text-sm font-medium text-muted-foreground">days</span>
         </div>
+        <p class="text-xs text-muted-foreground mt-1.5">Time without active usage</p>
+        <div class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-amber-500 to-yellow-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
       </div>
 
       <!-- Idle 14+ Days -->
-      <div class="rounded-xl border border-border bg-card text-card-foreground shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1 hover:border-destructive/30">
-        <div class="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
-            <h3 class="tracking-tight text-sm font-medium">Idle 14+ Days</h3>
-            <svg class="h-4 w-4 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+      <div class="group relative bg-card rounded-xl border border-border p-5 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden animate-fade-in-up delay-3">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-medium text-muted-foreground">Idle 14+ Days</h3>
+            <div class="w-9 h-9 rounded-lg bg-rose-500/10 text-rose-500 flex items-center justify-center">
+                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+            </div>
         </div>
-        <div class="p-6 pt-0">
-            <div class="text-2xl font-bold text-destructive">{{idleOver14Days}}</div>
-            <p class="text-xs text-muted-foreground mt-1">Requires immediate attention</p>
+        <div class="flex items-baseline gap-2">
+            <span class="text-3xl font-bold tracking-tight text-foreground" [class.text-rose-500]="idleOver14Days > 0">{{idleOver14Days}}</span>
         </div>
+        <p class="text-xs text-muted-foreground mt-1.5">Requires immediate attention</p>
+        <div class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-rose-500 to-pink-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
       </div>
 
       <!-- Services Affected -->
-      <div class="rounded-xl border border-border bg-card text-card-foreground shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1">
-        <div class="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
-            <h3 class="tracking-tight text-sm font-medium">Services Affected</h3>
-            <svg class="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+      <div class="group relative bg-card rounded-xl border border-border p-5 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden animate-fade-in-up delay-4">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-medium text-muted-foreground">Services Affected</h3>
+            <div class="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="14" rx="1"></rect><rect width="7" height="7" x="3" y="14" rx="1"></rect></svg>
+            </div>
         </div>
-        <div class="p-6 pt-0">
-            <div class="text-2xl font-bold">{{servicesAffected}}</div>
-            <p class="text-xs text-muted-foreground mt-1">Distinct AWS resource types</p>
+        <div class="flex items-baseline gap-2">
+            <span class="text-3xl font-bold tracking-tight text-foreground">{{servicesAffected}}</span>
         </div>
+        <p class="text-xs text-muted-foreground mt-1.5">Distinct AWS resource types</p>
+        <div class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-emerald-500 to-teal-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
       </div>
 
     </div>

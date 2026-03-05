@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+    darkMode: 'class',
     content: [
         "./src/**/*.{html,ts}",
     ],
@@ -39,6 +40,24 @@ module.exports = {
                     DEFAULT: "hsl(var(--card))",
                     foreground: "hsl(var(--card-foreground))",
                 },
+                sidebar: {
+                    DEFAULT: "hsl(var(--sidebar))",
+                    foreground: "hsl(var(--sidebar-foreground))",
+                    border: "hsl(var(--sidebar-border))",
+                    accent: "hsl(var(--sidebar-accent))",
+                    "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
+                    primary: "hsl(var(--sidebar-primary))",
+                    "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
+                },
+            },
+            keyframes: {
+                'fade-in-up': {
+                    '0%': { opacity: '0', transform: 'translateY(12px)' },
+                    '100%': { opacity: '1', transform: 'translateY(0)' },
+                },
+            },
+            animation: {
+                'fade-in-up': 'fade-in-up 0.4s ease-out both',
             },
         },
     },

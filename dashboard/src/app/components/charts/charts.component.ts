@@ -9,7 +9,7 @@ import { Resource } from '../../models/resource.model';
     standalone: true,
     imports: [CommonModule, BaseChartDirective],
     template: `
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 animate-fade-in-up">
       
       <!-- Waste by Service Chart -->
       <div class="rounded-xl border border-border bg-card text-card-foreground shadow-sm flex flex-col transition-all duration-300 hover:shadow-md hover:-translate-y-1">
