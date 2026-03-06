@@ -23,7 +23,8 @@ export class ResourceService {
     public fetchAllResources(): void {
         this.loadingSubject.next(true);
 
-        const accountEntries = Object.entries(environment.accounts);
+        // Filter out endpoints that are effectively empty strings
+        const accountEntries = Object.entries(environment.accounts).filter(([_, url]) => !!url);
 
         if (accountEntries.length === 0) {
             this.resourcesSubject.next([]);
@@ -98,7 +99,8 @@ export class ResourceService {
     public addManualCertificate(certPayload: any): Observable<any> {
         // Assuming we want to post this to the first available API endpoint, 
         // or a specific central endpoint. Let's find one.
-        const accountEntries = Object.entries(environment.accounts);
+        // Filter out endpoints that are empty strings
+        const accountEntries = Object.entries(environment.accounts).filter(([_, url]) => !!url);
 
         if (accountEntries.length === 0) {
             return throwError(() => new Error("No endpoints configured in environment."));
