@@ -2,7 +2,7 @@ export const environment = {
     production: false,
     accounts: {
         // ICS-AEM
-        "ICS-AEM-dev": "https://hw2y1tcl05.execute-api.us-east-1.amazonaws.com/prod/resources",
+        "ICS-AEM-dev": "https://ukptd3lxy6.execute-api.us-east-1.amazonaws.com/dev/resources",
         "ICS-AEM-tst": "",
         "ICS-AEM-pro": "",
 

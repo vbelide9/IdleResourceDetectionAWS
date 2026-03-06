@@ -322,20 +322,7 @@
                 </div>
             </div>
 
-            <div *ngIf="errors.length > 0"
-                class="bg-destructive/10 border border-destructive/20 rounded-lg p-4 shrink-0 animate-fade-in-up">
-                <h3 class="text-destructive font-semibold text-sm mb-2 flex items-center">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
-                        </path>
-                    </svg>
-                    Warning: Cross-Account Data Incomplete
-                </h3>
-                <ul class="list-disc list-inside text-sm text-destructive/80 space-y-1">
-                    <li *ngFor="let e of errors">Account <strong>{{e.account}}</strong> failed to load: {{e.error}}</li>
-                </ul>
-            </div>
+            <!-- Cross-account Error Banner Removed per user request -->
 
             <ng-container *ngIf="loading">
                 <div class="flex flex-col items-center justify-center p-24 text-muted-foreground flex-1 gap-4">
@@ -376,8 +363,8 @@
                                 </div>
                             </div>
                             <span class="text-4xl font-bold tracking-tight text-white">{{totalResourcesFlagged}}</span>
-                            <div class="mt-4 text-sm font-medium text-emerald-500">
-                                -12% from last month
+                            <div class="mt-4 text-sm font-medium text-slate-500">
+                                <!-- Data pending calculation -->
                             </div>
                         </div>
 
@@ -451,8 +438,8 @@
                                         >= 1000 ? (totalPotentialSavings / 1000 | number:'1.1-1') + 'K' :
                                         (totalPotentialSavings | number:'1.0-0')}}</span>
                                 </div>
-                                <div class="mt-4 text-sm font-medium text-emerald-500">
-                                    +8.2% potential
+                                <div class="mt-4 text-sm font-medium text-slate-500">
+                                    <!-- Data pending calculation -->
                                 </div>
                             </div>
 
@@ -486,7 +473,7 @@
                             <div
                                 class="group relative bg-[#0B1121] rounded-2xl border border-slate-800/60 p-6 shadow-sm hover:shadow-md hover:border-slate-700/80 transition-all duration-300 overflow-hidden">
                                 <div class="flex items-start justify-between mb-2">
-                                    <h3 class="text-sm font-medium text-slate-400">Open CVEs</h3>
+                                    <h3 class="text-sm font-medium text-slate-400">Services Affected</h3>
                                     <div
                                         class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
                                         <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
@@ -499,10 +486,9 @@
                                         </svg>
                                     </div>
                                 </div>
-                                <span class="text-4xl font-bold tracking-tight text-white">{{servicesAffected * 11 +
-                                    1}}</span>
-                                <div class="mt-4 text-sm font-medium text-red-500">
-                                    14 high severity
+                                <span class="text-4xl font-bold tracking-tight text-white">{{servicesAffected}}</span>
+                                <div class="mt-4 text-sm font-medium text-slate-500">
+                                    <!-- Data pending calculation -->
                                 </div>
                             </div>
                         </div>
@@ -530,7 +516,8 @@
                                             </svg>
                                         </div>
                                         <div>
-                                            <h3 class="text-base font-semibold text-foreground">Certificate Health</h3>
+                                            <h3 class="text-base font-semibold text-foreground">Certificate Health
+                                            </h3>
                                             <p class="text-sm text-muted-foreground">Expiration status overview</p>
                                         </div>
                                     </div>
@@ -682,7 +669,8 @@
                                     </div>
                                     <div class="flex justify-between text-[10px] text-muted-foreground -mt-1"
                                         *ngIf="totalPotentialSavings > 0">
-                                        <span>Idle: {{totalPotentialSavings > 0 ? ((idleSavings / totalPotentialSavings)
+                                        <span>Idle: {{totalPotentialSavings > 0 ? ((idleSavings /
+                                            totalPotentialSavings)
                                             *
                                             100 | number:'1.0-0') : 0}}%</span>
                                         <span>Right-Size: {{totalPotentialSavings > 0 ? ((rightSizingSavings /
