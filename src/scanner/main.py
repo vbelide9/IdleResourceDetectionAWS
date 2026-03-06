@@ -251,6 +251,7 @@ def scan_ec2(aws_client, region, scan_ts):
     try:
         ec2        = aws_client.get_client("ec2", region)
         cloudwatch = aws_client.get_client("cloudwatch", region)
+        account_id = aws_client.get_client("sts", region).get_caller_identity()["Account"]
         idle       = []
 
         paginator  = ec2.get_paginator("describe_instances")
@@ -376,19 +377,18 @@ def scan_ec2(aws_client, region, scan_ts):
             try:
                 co_client = aws_client.get_client("compute-optimizer", region)
                 co_response = co_client.get_ec2_instance_recommendations(
-                    instanceArns=[f"arn:aws:ec2:{region}:{boto3.client('sts').get_caller_identity()['Account']}:instance/{instance_id}"]
+                    instanceArns=[f"arn:aws:ec2:{region}:{account_id}:instance/{instance_id}"]
                 )
                 recommendations = co_response.get('instanceRecommendations', [])
                 if recommendations:
                     rec = recommendations[0]
                     optimizer_finding = rec.get("finding", "Unknown")
                     
-                    if optimizer_finding in ["Overprovisioned", "Underprovisioned", "Optimized"]:
-                        options = rec.get("recommendationOptions", [])
-                        if options:
-                            best_option = options[0]
-                            optimizer_recommendation = f"Change to {best_option.get('instanceType', 'Unknown')}"
-                            monthly_savings_opportunity = float(best_option.get('savingsOpportunity', {}).get('estimatedMonthlySavings', {}).get('value', 0.0))
+                    options = rec.get("recommendationOptions", [])
+                    if options:
+                        best_option = options[0]
+                        optimizer_recommendation = f"Change to {best_option.get('instanceType', 'Unknown')}"
+                        monthly_savings_opportunity = float(best_option.get('savingsOpportunity', {}).get('estimatedMonthlySavings', {}).get('value', 0.0))
             except Exception as e:
                 logger.debug(f"Compute Optimizer check failed for {instance_id}: {e}")
                 
@@ -1003,23 +1003,20 @@ def scan_acm_certificates(aws_client, region, scan_ts):
                 expiration_dt = not_after.replace(tzinfo=None)
                 days_until_expiration = (expiration_dt - now).total_seconds() / 86400.0
                 
-                # Flag certificates expiring in less than 30 days
-                is_idle = days_until_expiration < 30.0
-                
-                if is_idle:
-                    idle.append({
-                        "ResourceId": cert_details.get("DomainName", cert_arn.split("/")[-1]),
-                        "Service": "ACM", "Region": region,
-                        "IdleReason": f"Certificate expiring in {days_until_expiration:.1f} days",
-                        "IdleStats": {
-                            "last_active": None, "idle_until": now.isoformat(),
-                            "idle_hours": 0.0, "idle_days": 30.0,
-                            "DataStatus": "OK"
-                        },
-                        "acm_expiration_days": days_until_expiration,
-                        "acm_expiration_date": expiration_dt.isoformat(),
-                        "Tags": tags, "scan_ts": scan_ts
-                    })
+                # Certificate data collection - Include all for frontend filtering (Critical/Warning/Healthy)
+                idle.append({
+                    "ResourceId": cert_details.get("DomainName", cert_arn.split("/")[-1]),
+                    "Service": "ACM", "Region": region,
+                    "IdleReason": f"Certificate expiring in {days_until_expiration:.1f} days",
+                    "IdleStats": {
+                        "last_active": None, "idle_until": now.isoformat(),
+                        "idle_hours": 0.0, "idle_days": float(f"{days_until_expiration:.2f}"),
+                        "DataStatus": "OK"
+                    },
+                    "acm_expiration_days": days_until_expiration,
+                    "acm_expiration_date": expiration_dt.isoformat(),
+                    "Tags": tags, "scan_ts": scan_ts
+                })
         return idle
     except Exception as e:
         logger.error(f"scan_acm_certificates failed in {region}: {e}")
