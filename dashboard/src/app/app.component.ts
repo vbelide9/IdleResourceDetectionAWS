@@ -212,8 +212,8 @@ export class AppComponent implements OnInit, OnDestroy {
         this.idleOptimizationData = this.optimizerData.filter(i => i.optimizer_finding === 'Idle');
         this.rightSizingOptimizationData = this.optimizerData.filter(i => i.optimizer_finding !== 'Idle');
 
-        this.certificatesData = this.filteredData.filter(i => i.type === 'ACM Certificate');
-        this.costAnomaliesData = this.filteredData.filter(i => i.type === 'Cost Anomaly');
+        this.certificatesData = this.filteredData.filter(i => i.type === 'ACM' || i.type === 'ACM Certificate');
+        this.costAnomaliesData = this.filteredData.filter(i => i.type === 'CostAnomaly' || i.type === 'Cost Anomaly');
 
         this.calculateStats();
     }
@@ -234,7 +234,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
         // AMI stats
         this.totalAMIs = this.analyticsData.length;
-        this.oldAMIs = this.analyticsData.filter(i => (i as any).ami_age_days > 365).length;
+        this.oldAMIs = this.analyticsData.filter(i => (i as any).ami_age_days > 30).length;
         this.stoppedInstances = this.analyticsData.filter(i => (i as any).instance_state === 'stopped').length;
         this.uniqueAMICount = new Set(this.analyticsData.map(i => i.ami_id)).size;
 

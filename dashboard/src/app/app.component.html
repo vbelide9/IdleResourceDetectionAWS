@@ -838,20 +838,19 @@
                         <div
                             class="group relative bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
                             <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-base font-medium text-muted-foreground">Old AMIs (1yr+)</h3>
+                                <h3 class="text-base font-medium text-muted-foreground">Old AMIs (>30d)</h3>
                                 <div
-                                    class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center">
-                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    class="mt-2 w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center shrink-0">
+                                    <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
                                 </div>
                             </div>
                             <span class="text-4xl font-bold tracking-tight" [class.text-amber-500]="oldAMIs > 0"
                                 [class.text-foreground]="oldAMIs === 0">{{oldAMIs}}</span>
-                            <p class="text-sm text-muted-foreground mt-2">AMIs older than 365 days</p>
+                            <p class="text-sm text-muted-foreground mt-2">AMIs older than 30 days</p>
                             <div
                                 class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-yellow-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500">
                             </div>
