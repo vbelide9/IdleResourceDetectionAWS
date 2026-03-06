@@ -11,6 +11,9 @@ export interface Resource {
     accountLabel?: string;
     region?: string;
     resource_name?: string;
+    resource_id?: string;
+    ResourceId?: string;
+    scan_ts?: string;
     status?: string;
     instance_state?: string;
     ami_id?: string;

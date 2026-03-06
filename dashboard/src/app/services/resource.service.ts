@@ -48,11 +48,41 @@ export class ResourceService {
                         }
                     }
 
+                    const mapItems = (items: any[]) => {
+                        return items.map((item: any) => {
+                            // Deduce project and env from AccountName if missing
+                            let project = item.project;
+                            let env = item.env || item.region;
+                            if (!project || !env) {
+                                const parts = accountName.split('-');
+                                if (parts.length >= 3) {
+                                    project = `${parts[0]}-${parts[1]}`;
+                                    env = parts[2];
+                                } else {
+                                    project = accountName;
+                                    env = item.region || 'Unknown';
+                                }
+                            }
+
+                            return {
+                                ...item,
+                                accountLabel: accountName,
+                                type: item.type || item.service || 'Unknown',
+                                days_idle: item.days_idle !== undefined ? item.days_idle : (item.idle_days || 0),
+                                reason: item.reason || item.idle_reason || 'Unknown',
+                                project: project,
+                                env: env,
+                                // ensure these exist for sorting/filtering
+                                region: item.region || env
+                            };
+                        });
+                    };
+
                     // Ensure we return an array
                     if (Array.isArray(data)) {
-                        return data.map(item => ({ ...item, accountLabel: accountName }));
+                        return mapItems(data);
                     } else if (data && data.items && Array.isArray(data.items)) {
-                        return data.items.map((item: any) => ({ ...item, accountLabel: accountName }));
+                        return mapItems(data.items);
                     } else if (data && typeof data === 'object') {
                         // If it's a single object that isn't an array, wrap it, but it's likely an error format
                         console.warn(`Unexpected data format from ${accountName}:`, data);
@@ -80,7 +110,30 @@ export class ResourceService {
         forkJoin(requests).pipe(
             map(resultsArray => {
                 // Flatten the array of arrays into a single array of resources
-                return resultsArray.reduce((acc, curr) => acc.concat(curr), []);
+                const allItems = resultsArray.reduce((acc, curr) => acc.concat(curr), []);
+
+                // Deduplicate by resource_id to keep only the latest scan
+                const uniqueMap = new Map<string, Resource>();
+
+                allItems.forEach(item => {
+                    const id = item.ResourceId || item.resource_id || item.resource_name || item.sk;
+                    if (!id) return;
+
+                    if (!uniqueMap.has(id)) {
+                        uniqueMap.set(id, item);
+                    } else {
+                        const existing = uniqueMap.get(id)!;
+                        // Determine which is newer
+                        const existingTs = existing.scan_ts ? new Date(existing.scan_ts).getTime() : 0;
+                        const newTs = item.scan_ts ? new Date(item.scan_ts).getTime() : 0;
+
+                        if (newTs > existingTs) {
+                            uniqueMap.set(id, item);
+                        }
+                    }
+                });
+
+                return Array.from(uniqueMap.values());
             }),
             finalize(() => {
                 this.loadingSubject.next(false);
